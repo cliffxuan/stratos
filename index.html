@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stratos: Orbital Data Center Feasibility Study</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; overflow-x: hidden; }
+        .chart-container { position: relative; width: 100%; height: 300px; margin: auto; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        .tab-content { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
+        .tab-content.active { display: block; opacity: 1; }
+        .terminator { position: absolute; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(0,0,0,0.6) 50%, rgba(255,255,255,0) 50%); border-radius: 50%; display: none; pointer-events: none; z-index: 15; }
+        .sso-active .terminator { display: block; }
+        .player-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .player-card.hidden-item { display: none; }
+        .dot { transition: all 0.3s ease-in-out; }
+        input:checked ~ .dot { transform: translateX(100%); background-color: #4f46e5; }
+        .gradient-border { border: 2px solid transparent; background: linear-gradient(white, white) padding-box, linear-gradient(to right, #4f46e5, #ec4899) border-box; }
+    </style>
+
+    <!-- Placeholder Comments Required by Prompt -->
+    <!-- Chosen Palette: "Orbital Clarity" - Slate background with Indigo/Pink accents for high-tech elements. -->
+    <!-- Application Structure Plan: 
+         1. Summary: High-level feasibility.
+         2. Energy: Thermodynamic comparison.
+         3. Mechanics: Interactive simulator with SSO/Terminator logic.
+         4. Strategic Landscape: Now includes SpaceX/Musk integration as the "Enabler" layer.
+         5. Economics: Detailed look at Starship's impact on launch pricing.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center cursor-pointer" onclick="switchTab('summary')">
+                    <i class="ph ph-planet text-indigo-600 text-2xl mr-2"></i>
+                    <span class="font-bold text-xl tracking-tight text-slate-900">Project Stratos</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <button onclick="switchTab('summary')" class="nav-btn text-indigo-600 font-medium" data-target="summary">Summary</button>
+                    <button onclick="switchTab('energy')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="energy">Energy</button>
+                    <button onclick="switchTab('orbital')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="orbital">Mechanics</button>
+                    <button onclick="switchTab('players')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="players">Players</button>
+                    <button onclick="switchTab('economics')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="economics">Economics</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- SECTION 1: Summary -->
+        <div id="summary" class="tab-content active">
+            <div class="mb-12 text-center">
+                <h1 class="text-4xl font-bold text-slate-900 mb-4">The Orbital Data Infrastructure</h1>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto">Researching the transition of global computing to space: powered by infinite solar, cooled by the void, and enabled by the next generation of heavy-lift launch.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <i class="ph ph-lightning text-indigo-600 text-3xl mb-4"></i>
+                    <h3 class="text-sm font-bold text-slate-500 uppercase">Power Delta</h3>
+                    <p class="text-2xl font-bold">+35% Intensity</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <i class="ph ph-cpu text-pink-600 text-3xl mb-4"></i>
+                    <h3 class="text-sm font-bold text-slate-500 uppercase">Latency (LEO)</h3>
+                    <p class="text-2xl font-bold">&lt; 15 ms</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <i class="ph ph-rocket text-indigo-600 text-3xl mb-4"></i>
+                    <h3 class="text-sm font-bold text-slate-500 uppercase">Launch Price</h3>
+                    <p class="text-2xl font-bold">$200 / kg</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800">The Problem: Terrestrial Caps</h2>
+                    <p class="text-slate-600 leading-relaxed mb-4">
+                        Data centers currently consume nearly **3% of global electricity**. On the current trajectory of AI training (demanding 10x compute every 18 months), we will reach a "Thermodynamic Wall" where the cost of cooling on Earth exceeds the value of the computation.
+                    </p>
+                    <div class="flex items-center p-4 bg-slate-50 rounded-lg">
+                        <i class="ph ph-warning-circle text-orange-500 text-2xl mr-3"></i>
+                        <p class="text-sm text-slate-700"><strong>Critical Insight:</strong> Moving compute to space isn't just about efficiency; it's about avoiding the 40% energy waste inherent in terrestrial AC systems.</p>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-indigo-600 to-pink-600 p-8 rounded-2xl text-white">
+                    <h2 class="text-2xl font-bold mb-4">The Solution: Orbit</h2>
+                    <p class="text-indigo-100 leading-relaxed mb-6">
+                        By utilizing Sun-Synchronous Orbits and passive radiative cooling, orbital data centers achieve a near-perfect PUE of 1.05. This eliminates the need for Earth's freshwater and local power grids.
+                    </p>
+                    <button onclick="switchTab('orbital')" class="px-6 py-2 bg-white text-indigo-600 font-bold rounded-lg hover:bg-indigo-50 transition">Launch Simulator</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Energy -->
+        <div id="energy" class="tab-content">
+            <h2 class="text-2xl font-bold mb-8">Thermodynamics: Earth vs Space</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold mb-4">Projected Global Compute Demand</h3>
+                    <div class="chart-container"><canvas id="energyChart"></canvas></div>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold mb-4">Cooling Efficiency (PUE)</h3>
+                    <div class="flex justify-around py-10">
+                        <div class="text-center">
+                            <p class="text-xs font-bold text-slate-400 mb-4 uppercase">Terrestrial (Fans/AC)</p>
+                            <div class="relative w-32 h-32 mx-auto"><canvas id="pueEarth"></canvas><div class="absolute inset-0 flex items-center justify-center font-bold text-slate-700">1.58</div></div>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-xs font-bold text-slate-400 mb-4 uppercase">Orbital (Radiative)</p>
+                            <div class="relative w-32 h-32 mx-auto"><canvas id="pueSpace"></canvas><div class="absolute inset-0 flex items-center justify-center font-bold text-emerald-600">1.05</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Orbital Mechanics -->
+        <div id="orbital" class="tab-content">
+            <h2 class="text-2xl font-bold mb-8">Orbital Dynamics Simulator</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-4 space-y-4">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-2"><span>Target Altitude</span><span id="altLabel" class="text-indigo-600">500 km</span></label>
+                                <input type="range" id="altSlider" min="300" max="36000" step="100" value="500" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            </div>
+                            <div class="pt-4 border-t border-slate-100">
+                                <label class="flex items-center cursor-pointer">
+                                    <div class="relative">
+                                        <input type="checkbox" id="ssoToggle" class="sr-only" onchange="toggleSSO()">
+                                        <div class="block bg-slate-200 w-10 h-6 rounded-full"></div>
+                                        <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div>
+                                    </div>
+                                    <div class="ml-3 text-slate-700 font-bold text-sm">SSO (Terminator Mode)</div>
+                                </label>
+                                <p class="text-[10px] text-slate-400 mt-2 italic">Dawn-Dusk synchronization for 24/7 solar uptime.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 p-6 rounded-xl text-white space-y-4">
+                        <div class="flex justify-between text-sm"><span class="text-slate-400">Signal Latency:</span><span id="latVal" class="font-bold text-indigo-400">3.3 ms</span></div>
+                        <div class="flex justify-between text-sm"><span class="text-slate-400">Solar Uptime:</span><span id="sunVal" class="font-bold text-emerald-400">66%</span></div>
+                    </div>
+                </div>
+                <div class="lg:col-span-8 bg-slate-900 rounded-2xl relative flex items-center justify-center h-[500px] overflow-hidden border border-slate-800" id="stage">
+                    <div id="earth" class="relative w-48 h-48 bg-blue-600 rounded-full shadow-[0_0_100px_rgba(59,130,246,0.3)] z-10 overflow-hidden">
+                        <div class="terminator" id="term"></div>
+                    </div>
+                    <div id="path" class="absolute border border-slate-700 border-dashed rounded-full z-0 transition-all duration-500"></div>
+                    <div id="sat" class="absolute z-20 transition-all duration-500"><i class="ph ph-solar-panel text-yellow-400 text-4xl"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: Strategic Landscape -->
+        <div id="players" class="tab-content">
+            <h2 class="text-2xl font-bold mb-8">The Space Cloud Race</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                <!-- Enabler Layer -->
+                <div class="lg:col-span-1">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase mb-4 tracking-widest">The Enabler Layer</h3>
+                    <div class="gradient-border p-6 rounded-xl shadow-lg space-y-4">
+                        <div class="flex items-center">
+                            <i class="ph ph-rocket-launch text-pink-600 text-3xl mr-3"></i>
+                            <h4 class="font-bold text-xl">SpaceX (Starlink)</h4>
+                        </div>
+                        <p class="text-sm text-slate-600">The vertical stack of compute: Launch (Starship) + Network (Laser Links) + Platform (Starshield). SpaceX owns the only infrastructure capable of massive orbital server deployment.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">LIFELINE</span>
+                            <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">EDGE-AI</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Client Layer -->
+                <div class="lg:col-span-2">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase mb-4 tracking-widest">Market Specialists</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white p-6 rounded-xl border border-slate-200">
+                            <h4 class="font-bold mb-2">EU Project ASCEND</h4>
+                            <p class="text-xs text-slate-500">Studying 200MW clusters to bypass European energy grid constraints. Aiming for sovereign green cloud clusters.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-slate-200">
+                            <h4 class="font-bold mb-2">Lonestar Data</h4>
+                            <p class="text-xs text-slate-500">Disaster recovery in Lunar lava tubes. The "Global Reset" backup for human data civilization.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-slate-200">
+                            <h4 class="font-bold mb-2">Microsoft Azure Space</h4>
+                            <p class="text-xs text-slate-500">Edge compute for real-time Earth Observation processing. Shrinking the data from petabytes to kilobytes in-situ.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-slate-200">
+                            <h4 class="font-bold mb-2">xAI / Colossus</h4>
+                            <p class="text-xs text-slate-500">Potential client for space-training. Moving the massive AI heat load off-planet to scale intelligence indefinitely.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-slate-50 p-8 rounded-2xl border border-slate-200">
+                <h3 class="font-bold mb-6 flex items-center"><i class="ph ph-chart-pie-slice mr-2 text-indigo-600"></i> The "Starship Effect" on Strategy</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center p-4">
+                        <span class="block text-3xl font-bold text-indigo-600 mb-2">100T</span>
+                        <p class="text-xs font-bold text-slate-800 mb-1">Payload to LEO</p>
+                        <p class="text-[10px] text-slate-500">Allows for heavy lead/water radiation shielding and full-sized server racks.</p>
+                    </div>
+                    <div class="text-center p-4">
+                        <span class="block text-3xl font-bold text-indigo-600 mb-2">$20M</span>
+                        <p class="text-xs font-bold text-slate-800 mb-1">Internal Launch Cost</p>
+                        <p class="text-[10px] text-slate-500">Makes the capital expenditure of space lower than terrestrial land acquisition.</p>
+                    </div>
+                    <div class="text-center p-4">
+                        <span class="block text-3xl font-bold text-indigo-600 mb-2">Daily</span>
+                        <p class="text-xs font-bold text-slate-800 mb-1">Flight Cadence</p>
+                        <p class="text-[10px] text-slate-500">Enables rapid hardware replacement Cycles (Moore's Law integration).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: Economics -->
+        <div id="economics" class="tab-content">
+            <h2 class="text-2xl font-bold mb-8">Economic Viability</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold mb-4">Launch Cost Disruption (Log Scale)</h3>
+                    <div class="chart-container"><canvas id="launchChart"></canvas></div>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold mb-4">Cumulative 10-Year TCO Analysis</h3>
+                    <div class="chart-container"><canvas id="tcoChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-400 text-sm">Strategic Research Document: The Orbital Cloud Opportunity. &copy; 2026 Stratos.</p>
+            <p class="text-slate-300 text-[10px] mt-2 italic">Infrastructure estimates based on Starship Block 2 payload capabilities.</p>
+        </div>
+    </footer>
+
+    <script>
+        // State
+        const state = { current: 'summary', altitude: 500, sso: false };
+
+        // Navigation
+        function switchTab(id) {
+            state.current = id;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.toggle('active', el.id === id));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('text-indigo-600', btn.dataset.target === id));
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        // Sim Logic
+        const slider = document.getElementById('altSlider');
+        function toggleSSO() {
+            state.sso = document.getElementById('ssoToggle').checked;
+            document.getElementById('stage').classList.toggle('sso-active', state.sso);
+            updateSim();
+        }
+        function updateSim() {
+            const alt = parseInt(slider.value);
+            document.getElementById('altLabel').innerText = `${alt} km`;
+            document.getElementById('latVal').innerText = `${((alt/300000)*2000).toFixed(1)} ms`;
+            document.getElementById('sunVal').innerText = state.sso ? '100%' : (alt > 35000 ? '99%' : '66%');
+            
+            const scale = 192 + (alt * 0.006);
+            const path = document.getElementById('path');
+            path.style.width = `${scale}px`; path.style.height = `${scale}px`;
+            
+            const radius = scale / 2;
+            const angle = state.sso ? 270 : 0;
+            const x = Math.cos(angle * Math.PI / 180) * radius;
+            const y = Math.sin(angle * Math.PI / 180) * radius;
+            document.getElementById('sat').style.transform = `translate(${x}px, ${y}px) rotate(${angle+90}deg)`;
+        }
+        slider.oninput = updateSim;
+
+        // Charts
+        function initCharts() {
+            const opt = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
+            new Chart(document.getElementById('energyChart'), {
+                type: 'line', data: { labels: ['2020','2025','2030','2035'], datasets: [{ data: [200, 380, 850, 1800], borderColor: '#4f46e5', tension: 0.4 }] }, options: opt
+            });
+            const dOpt = { ...opt, cutout: '70%' };
+            new Chart(document.getElementById('pueEarth'), { type: 'doughnut', data: { datasets: [{ data: [1, 0.58], backgroundColor: ['#e2e8f0','#ef4444'] }] }, options: dOpt });
+            new Chart(document.getElementById('pueSpace'), { type: 'doughnut', data: { datasets: [{ data: [1, 0.05], backgroundColor: ['#e2e8f0','#10b981'] }] }, options: dOpt });
+            new Chart(document.getElementById('launchChart'), {
+                type: 'line', data: { labels: ['Shuttle','F9','Starship'], datasets: [{ data: [54500, 2500, 100], borderColor: '#f43f5e', fill: true, backgroundColor: 'rgba(244,63,94,0.1)' }] }, options: { ...opt, scales: { y: { type: 'logarithmic' } } }
+            });
+            new Chart(document.getElementById('tcoChart'), {
+                type: 'bar', data: { labels: ['Build','Year 4','Year 7','Year 10'], datasets: [
+                    { label: 'Earth (Ops)', data: [50, 400, 800, 1400], backgroundColor: '#ef4444', stack: 'E' },
+                    { label: 'Space (Build)', data: [400, 400, 400, 400], backgroundColor: '#4f46e5', stack: 'S' },
+                    { label: 'Space (Ops)', data: [10, 80, 150, 250], backgroundColor: '#10b981', stack: 'S' }
+                ]}, options: { ...opt, scales: { x: { stacked: true }, y: { stacked: true } } }
+            });
+        }
+        window.onload = () => { initCharts(); updateSim(); };
+    </script>
+</body>
+</html>
