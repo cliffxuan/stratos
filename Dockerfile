@@ -1,4 +1,5 @@
-FROM nginx:alpine
+FROM alpine:latest
+RUN apk add --no-cache nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY index.html /usr/share/nginx/html/index.html
 ENV PORT=8000
