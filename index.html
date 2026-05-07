@@ -59,6 +59,7 @@
                     <button onclick="switchTab('orbital')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="orbital">Mechanics</button>
                     <button onclick="switchTab('players')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="players">Players</button>
                     <button onclick="switchTab('economics')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="economics">Economics</button>
+                    <button onclick="switchTab('challenges')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="challenges">Challenges</button>
                 </div>
             </div>
         </div>
@@ -94,7 +95,7 @@
                 <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
                     <h2 class="text-2xl font-bold mb-4 text-slate-800">The Problem: Terrestrial Caps</h2>
                     <p class="text-slate-600 leading-relaxed mb-4">
-                        Data centers currently consume nearly **3% of global electricity**. On the current trajectory of AI training (demanding 10x compute every 18 months), we will reach a "Thermodynamic Wall" where the cost of cooling on Earth exceeds the value of the computation.
+                        Data centers are on track to consume <strong>3% of global electricity</strong> by 2030. On the current trajectory of AI training (demanding 10x compute every 18 months), we will reach a "Thermodynamic Wall" where the cost of cooling on Earth exceeds the value of the computation.
                     </p>
                     <div class="flex items-center p-4 bg-slate-50 rounded-lg">
                         <i class="ph ph-warning-circle text-orange-500 text-2xl mr-3"></i>
@@ -252,6 +253,58 @@
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                     <h3 class="font-bold mb-4">Cumulative 10-Year TCO Analysis</h3>
                     <div class="chart-container"><canvas id="tcoChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 6: Challenges -->
+        <div id="challenges" class="tab-content">
+            <h2 class="text-2xl font-bold mb-8">The Harsh Realities of Orbit</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Radiation -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="ph ph-warning-circle text-orange-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">Radiation & Bit Flips</h3>
+                    <p class="text-sm text-slate-600">Standard terrestrial GPUs suffer rapid degradation and data corruption (Single Event Upsets) from cosmic rays. Mitigation requires heavy lead shielding or vastly more expensive, lower-performance radiation-hardened chips.</p>
+                </div>
+                
+                <!-- Bandwidth -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="ph ph-wifi-slash text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">The Bandwidth Bottleneck</h3>
+                    <p class="text-sm text-slate-600">While latency is low, uploading petabytes of AI training data to orbit via RF or optical laser links is a massive constraint compared to the massive throughput of terrestrial fiber-optic networks.</p>
+                </div>
+                
+                <!-- Maintenance -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="ph ph-wrench text-red-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">Zero-Maintenance Lifespan</h3>
+                    <p class="text-sm text-slate-600">Terrestrial servers are easily swapped when they fail. In orbit, a failed GPU is dead weight. Systems must be engineered for extreme durability, or rely on costly, frequent replacement launches.</p>
+                </div>
+                
+                <!-- Radiators -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="ph ph-thermometer text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">The Radiator Problem</h3>
+                    <p class="text-sm text-slate-600">Space is a vacuum, meaning no convection cooling. Rejecting megawatts of heat from AI clusters requires massive, heavy radiator wings, drastically increasing the physical footprint and launch mass.</p>
+                </div>
+                
+                <!-- Debris -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2 lg:col-span-1">
+                    <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="ph ph-meteor text-slate-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">Orbital Debris</h3>
+                    <p class="text-sm text-slate-600">Placing massive, delicate server farms in Low Earth Orbit turns them into large targets for micro-meteoroids and space junk, increasing the risk of catastrophic physical damage.</p>
                 </div>
             </div>
         </div>
