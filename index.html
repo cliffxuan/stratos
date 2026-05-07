@@ -60,6 +60,7 @@
                     <button onclick="switchTab('players')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="players">Players</button>
                     <button onclick="switchTab('economics')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="economics">Economics</button>
                     <button onclick="switchTab('challenges')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="challenges">Challenges</button>
+                    <button onclick="switchTab('media')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="media">Media</button>
                 </div>
             </div>
         </div>
@@ -309,11 +310,67 @@
             </div>
         </div>
 
+        <!-- SECTION 7: Media -->
+        <div id="media" class="tab-content">
+            <h2 class="text-2xl font-bold mb-8">Video Resources & Research</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Video 1 -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-lg mb-2">Are space GPUs practical? – Elon Musk</h3>
+                    <p class="text-sm text-slate-500 mb-4">Dwarkesh Podcast (Feb 2026). Musk discusses the immense energy constraints of terrestrial AI and the advantages of orbital solar arrays and vacuum cooling.</p>
+                    <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-slate-50 border border-slate-200 flex items-center justify-center">
+                        <a href="https://www.youtube.com/watch?v=BYXbuik3dgA" target="_blank" class="text-slate-600 hover:text-red-600 transition-colors flex flex-col items-center">
+                            <i class="ph ph-youtube-logo text-5xl mb-2"></i>
+                            <span class="font-bold">Watch on YouTube</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Video 2 -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-lg mb-2">Let's Build AI Data Centers in Space</h3>
+                    <p class="text-sm text-slate-500 mb-4">Philip Johnston (TED). A powerful pitch from the co-founder of Starcloud outlining the economic and physical case for space infrastructure.</p>
+                    <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-slate-50 border border-slate-200 flex items-center justify-center">
+                        <a href="https://www.youtube.com/watch?v=an6ZM0iCGQw" target="_blank" class="text-slate-600 hover:text-red-600 transition-colors flex flex-col items-center">
+                            <i class="ph ph-youtube-logo text-5xl mb-2"></i>
+                            <span class="font-bold">Watch on YouTube</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Video 3 -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-lg mb-2">Why Everyone Is Talking About Data Centers In Space</h3>
+                    <p class="text-sm text-slate-500 mb-4">Scott Manley. An extremely detailed, grounded look at the physical physics of heat rejection (the radiator problem) in a vacuum.</p>
+                    <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-slate-50 border border-slate-200 flex items-center justify-center">
+                        <a href="https://www.youtube.com/watch?v=DCto6UkBJoI" target="_blank" class="text-slate-600 hover:text-red-600 transition-colors flex flex-col items-center">
+                            <i class="ph ph-youtube-logo text-5xl mb-2"></i>
+                            <span class="font-bold">Watch on YouTube</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Video 4 -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-lg mb-2">Inside The Startup Launching AI Data Centers Into Space</h3>
+                    <p class="text-sm text-slate-500 mb-4">A behind-the-scenes look at the actual logistics and hardware challenges faced by orbital computing startups like Starcloud.</p>
+                    <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-slate-50 border border-slate-200 flex items-center justify-center">
+                        <a href="https://www.youtube.com/watch?v=hKw6cRKcqzY" target="_blank" class="text-slate-600 hover:text-red-600 transition-colors flex flex-col items-center">
+                            <i class="ph ph-youtube-logo text-5xl mb-2"></i>
+                            <span class="font-bold">Watch on YouTube</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </main>
 
     <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-slate-400 text-sm">Strategic Research Document: The Orbital Cloud Opportunity. &copy; 2026 Stratos.</p>
+            <p class="text-slate-400 text-sm">Strategic Research Document: The Orbital Cloud Opportunity. &copy; 2026 Stratos. | Brought to you by <a href="https://www.algoentropy.com/" target="_blank" class="hover:text-indigo-500 underline transition-colors">AlgoEntropy</a>.</p>
             <p class="text-slate-300 text-[10px] mt-2 italic">Infrastructure estimates based on Starship Block 2 payload capabilities.</p>
         </div>
     </footer>
