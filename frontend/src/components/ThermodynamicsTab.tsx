@@ -12,7 +12,6 @@ export const ThermodynamicsTab: React.FC<ThermodynamicsTabProps> = ({ powerMarke
   const [powerMW, setPowerMW] = useState<number>(10);
   const [radiatorTempC, setRadiatorTempC] = useState<number>(70);
 
-  // Stefan-Boltzmann calculations
   const tempK = radiatorTempC + 273.15;
   const sigma = 5.670374e-8;
   const eps = 0.92;
@@ -26,7 +25,6 @@ export const ThermodynamicsTab: React.FC<ThermodynamicsTabProps> = ({ powerMarke
   const totalMassTons = Math.round((powerMW * 1000 * 18) / 1000);
   const starshipFlights = Math.max(1, Math.ceil(totalMassTons / 120));
 
-  // Chart data: AI Power vs Grid Limit
   const powerTrendData = [
     { year: '2022', aiDemand: 340, gridAllocated: 500 },
     { year: '2024', aiDemand: 460, gridAllocated: 580 },
@@ -37,7 +35,6 @@ export const ThermodynamicsTab: React.FC<ThermodynamicsTabProps> = ({ powerMarke
     { year: '2034', aiDemand: 3500, gridAllocated: 1180 },
   ];
 
-  // Stefan-Boltzmann curve data
   const temps = [30, 40, 50, 60, 70, 80, 90, 100, 110];
   const radianceData = temps.map(t => {
     const tk = t + 273.15;
@@ -66,9 +63,7 @@ export const ThermodynamicsTab: React.FC<ThermodynamicsTabProps> = ({ powerMarke
         <p className="text-slate-400 text-sm mt-1">Comparing power generation, cooling physics, and parasitic energy overhead</p>
       </div>
 
-      {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Global Compute Demand Chart */}
         <div className="glass-card p-6 rounded-3xl border border-slate-800">
           <div className="flex justify-between items-center mb-4">
             <div>
@@ -91,7 +86,6 @@ export const ThermodynamicsTab: React.FC<ThermodynamicsTabProps> = ({ powerMarke
           </div>
         </div>
 
-        {/* PUE Breakdown Doughnuts */}
         <div className="glass-card p-6 rounded-3xl border border-slate-800">
           <div className="flex justify-between items-center mb-4">
             <div>
@@ -143,7 +137,6 @@ export const ThermodynamicsTab: React.FC<ThermodynamicsTabProps> = ({ powerMarke
         </div>
       </div>
 
-      {/* Physics Radiance Curve & Sizing Calculator */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-7 glass-card p-6 rounded-3xl border border-slate-800">
           <div className="flex justify-between items-center mb-4">
@@ -235,7 +228,6 @@ export const ThermodynamicsTab: React.FC<ThermodynamicsTabProps> = ({ powerMarke
         </div>
       </div>
 
-      {/* Live Power Market Grid */}
       {powerMarkets && powerMarkets.length > 0 && (
         <div className="glass-card p-6 rounded-3xl border border-slate-800">
           <h3 className="font-bold text-white text-base mb-4 flex items-center gap-2">
@@ -254,9 +246,9 @@ export const ThermodynamicsTab: React.FC<ThermodynamicsTabProps> = ({ powerMarke
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60 text-slate-300">
-                {powerMarkets.map((m, idx) => (
-                  <tr key={idx} className="hover:bg-slate-800/30">
-                    <td className="py-2.5 font-bold text-white">{m.hub}</td>
+                {powerMarkets.map((m) => (
+                  <tr key={m.hub_id} className="hover:bg-slate-800/30">
+                    <td className="py-2.5 font-bold text-white">{m.hub_name}</td>
                     <td className="py-2.5 font-semibold text-pink-400">${m.power_price_per_mwh.toFixed(2)}</td>
                     <td className="py-2.5">${m.effective_kwh_cost.toFixed(4)}</td>
                     <td className="py-2.5">{m.water_consumption_gal_per_mwh} Gal</td>
@@ -270,7 +262,6 @@ export const ThermodynamicsTab: React.FC<ThermodynamicsTabProps> = ({ powerMarke
         </div>
       )}
 
-      {/* Silicon Benchmark Matrix */}
       {hardwareProfiles && hardwareProfiles.length > 0 && (
         <div className="glass-card p-6 rounded-3xl border border-slate-800">
           <h3 className="font-bold text-white text-base mb-4 flex items-center gap-2">

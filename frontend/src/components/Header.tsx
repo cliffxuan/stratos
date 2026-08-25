@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TabId } from '../types';
-import { Globe, Menu, X, Orbit } from 'lucide-react';
+import { Globe, Menu, X, Orbit, Zap } from 'lucide-react';
 
 interface HeaderProps {
   currentTab: TabId;
@@ -12,13 +12,14 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onSelectTab }) => {
 
   const navItems: { id: TabId; label: string; badge?: string }[] = [
     { id: 'summary', label: 'Overview' },
+    { id: 'tracking', label: 'Live Orbit & Laser Mesh', badge: 'Live' },
+    { id: 'arbitrage', label: 'Grid Arbitrage' },
+    { id: 'hardware', label: 'Silicon Matrix' },
     { id: 'timeline', label: 'News & Timeline', badge: '2026' },
     { id: 'energy', label: 'Thermodynamics' },
-    { id: 'orbital', label: 'Mechanics Sim' },
-    { id: 'players', label: 'Ecosystem' },
-    { id: 'economics', label: 'Economics & TCO' },
+    { id: 'economics', label: 'Financial TCO' },
     { id: 'challenges', label: 'Challenges' },
-    { id: 'media', label: 'Media & Talks' },
+    { id: 'media', label: 'Media & Papers' },
   ];
 
   const handleTabClick = (id: TabId) => {
@@ -30,6 +31,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onSelectTab }) => {
     <nav className="sticky top-0 z-50 glass-card border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+          
           {/* Logo */}
           <div 
             className="flex items-center space-x-3 cursor-pointer group"
@@ -41,9 +43,9 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onSelectTab }) => {
             <div>
               <div className="flex items-center space-x-2">
                 <span className="font-extrabold text-lg text-white tracking-tight">STRATOS</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">v2.6</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">v2.0 Data Engine</span>
               </div>
-              <p className="text-[10px] text-slate-400 tracking-wider uppercase font-medium">Orbital Computing Intelligence</p>
+              <p className="text-[10px] text-slate-400 tracking-wider uppercase font-medium">Orbital Computing Intelligence Platform</p>
             </div>
           </div>
 
@@ -61,7 +63,11 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onSelectTab }) => {
               >
                 {item.label}
                 {item.badge && (
-                  <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-pink-500/20 text-pink-300 font-bold">
+                  <span className={`text-[9px] font-mono px-1 py-0.2 rounded font-bold ${
+                    item.badge === 'Live' 
+                      ? 'bg-emerald-500/20 text-emerald-300 animate-pulse' 
+                      : 'bg-pink-500/20 text-pink-300'
+                  }`}>
                     {item.badge}
                   </span>
                 )}
@@ -72,10 +78,16 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onSelectTab }) => {
           {/* Quick Action Button */}
           <div className="hidden md:flex items-center space-x-3">
             <button
-              onClick={() => handleTabClick('orbital')}
-              className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-md shadow-indigo-600/30 transition flex items-center gap-1.5"
+              onClick={() => handleTabClick('tracking')}
+              className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white shadow-md shadow-cyan-600/30 transition flex items-center gap-1.5"
             >
-              <Orbit className="w-3.5 h-3.5" /> Launch Sim
+              <Orbit className="w-3.5 h-3.5" /> Orbit Track
+            </button>
+            <button
+              onClick={() => handleTabClick('arbitrage')}
+              className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white shadow-md shadow-indigo-600/30 transition flex items-center gap-1.5"
+            >
+              <Zap className="w-3.5 h-3.5" /> Power Arbitrage
             </button>
           </div>
 

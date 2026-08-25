@@ -1,0 +1,79 @@
+{
+  "power_markets": [
+    {
+      "hub_id": "pjm-dominion",
+      "hub_name": "PJM Interconnection (Northern Virginia)",
+      "sub_region": "Data Center Alley (Loudoun County, VA)",
+      "grid_type": "Terrestrial Mixed (Gas, Nuclear, Solar)",
+      "power_price_per_mwh": 118.50,
+      "effective_kwh_cost": 0.1185,
+      "peak_summer_kwh_cost": 0.1850,
+      "water_consumption_gal_per_mwh": 500,
+      "carbon_intensity_g_co2_kwh": 380,
+      "grid_interconnect_queue_years": 5.5,
+      "pue_average": 1.55,
+      "transformer_lead_time_months": 36,
+      "notes": "Dominion Energy constrained; new 50MW+ requests face 2030+ substation delivery timelines."
+    },
+    {
+      "hub_id": "ercot-texas",
+      "hub_name": "ERCOT (Texas AI Hubs)",
+      "sub_region": "Dallas / Austin / West Texas",
+      "grid_type": "Terrestrial Gas & Utility Solar",
+      "power_price_per_mwh": 95.00,
+      "effective_kwh_cost": 0.0950,
+      "peak_summer_kwh_cost": 0.2400,
+      "water_consumption_gal_per_mwh": 650,
+      "carbon_intensity_g_co2_kwh": 410,
+      "grid_interconnect_queue_years": 4.0,
+      "pue_average": 1.58,
+      "transformer_lead_time_months": 30,
+      "notes": "High volatility during summer heat waves with 4CP transmission penalty charges."
+    },
+    {
+      "hub_id": "caiso-california",
+      "hub_name": "CAISO (California AI Clusters)",
+      "sub_region": "Silicon Valley / Bay Area",
+      "grid_type": "Terrestrial Solar & Gas Peakers",
+      "power_price_per_mwh": 165.00,
+      "effective_kwh_cost": 0.1650,
+      "peak_summer_kwh_cost": 0.3200,
+      "water_consumption_gal_per_mwh": 420,
+      "carbon_intensity_g_co2_kwh": 220,
+      "grid_interconnect_queue_years": 6.0,
+      "pue_average": 1.50,
+      "transformer_lead_time_months": 42,
+      "notes": "Highest industrial rates in contiguous US; strict local environmental water discharge rules."
+    },
+    {
+      "hub_id": "nord-pool",
+      "hub_name": "Nord Pool (Scandinavia)",
+      "sub_region": "Sweden / Norway Hydro Zone",
+      "grid_type": "Terrestrial Hydro & Wind Renewables",
+      "power_price_per_mwh": 72.00,
+      "effective_kwh_cost": 0.0720,
+      "peak_summer_kwh_cost": 0.0950,
+      "water_consumption_gal_per_mwh": 120,
+      "carbon_intensity_g_co2_kwh": 35,
+      "grid_interconnect_queue_years": 3.5,
+      "pue_average": 1.35,
+      "transformer_lead_time_months": 24,
+      "notes": "Low carbon & low price, but high optical latency to US/Asian training consumers."
+    },
+    {
+      "hub_id": "leo-sso-orbit",
+      "hub_name": "Low Earth Orbit (Sun-Synchronous 550km)",
+      "sub_region": "Orbital Space Domain (Continuous Solar)",
+      "grid_type": "Orbital Direct Solar (AM0 1,361 W/m²)",
+      "power_price_per_mwh": 0.00,
+      "effective_kwh_cost": 0.0000,
+      "peak_summer_kwh_cost": 0.0000,
+      "water_consumption_gal_per_mwh": 0,
+      "carbon_intensity_g_co2_kwh": 0,
+      "grid_interconnect_queue_years": 0.0,
+      "pue_average": 1.05,
+      "transformer_lead_time_months": 0,
+      "notes": "Infinite 100% solar duty cycle in dawn-dusk SSO; zero fuel or water OpEx. Capacity scales with launch cadence."
+    }
+  ]
+}

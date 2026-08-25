@@ -26,16 +26,16 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ onSelectTab }) => {
           </p>
           <div className="flex flex-wrap gap-4 pt-2">
             <button
-              onClick={() => onSelectTab('timeline')}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 transition flex items-center gap-2"
+              onClick={() => onSelectTab('tracking')}
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 transition flex items-center gap-2"
             >
-              <Zap className="w-4 h-4" /> Read 2026 News & Breakthroughs
+              <Cpu className="w-4 h-4" /> Live Constellation & Laser Mesh
             </button>
             <button
-              onClick={() => onSelectTab('orbital')}
+              onClick={() => onSelectTab('arbitrage')}
               className="px-6 py-3 rounded-xl glass-card hover:bg-slate-800/80 text-slate-200 font-semibold text-sm border border-slate-700 transition flex items-center gap-2"
             >
-              <Cpu className="w-4 h-4 text-indigo-400" /> Interactive Dynamics Simulator
+              <Zap className="w-4 h-4 text-amber-400" /> Real-Time Grid Arbitrage
             </button>
           </div>
         </div>

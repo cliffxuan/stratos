@@ -1,0 +1,81 @@
+{
+  "timeline": [
+    {
+      "id": "news-1",
+      "date": "August 2026",
+      "category": "spacex",
+      "title": "SpaceX Unveils 'Project Starmind' with NVIDIA Vera Rubin AI1 Constellation",
+      "summary": "Dedicated constellation of heavy compute satellites designed to power next-generation agentic AI and Grok models directly from LEO. Engineered with 20m vertical chassis and 70m deployable liquid radiator wings.",
+      "badge": "Breaking Development",
+      "tags": ["SpaceX", "NVIDIA", "Starship", "Vera Rubin"],
+      "source_url": "https://www.algoentropy.com",
+      "impact_score": 9.8
+    },
+    {
+      "id": "news-2",
+      "date": "August 2026",
+      "category": "starcloud",
+      "title": "Starcloud Raises $250M Series A Extension ($450M Total, $2.3B Valuation)",
+      "summary": "Following the successful execution of the Starcloud-1 orbital H100 test, Starcloud secured $250M from NVIDIA, Cisco, and Benchmark to mass produce Starcloud-2 clusters.",
+      "badge": "Venture Acceleration",
+      "tags": ["Starcloud", "Funding", "Unicorn", "NVIDIA"],
+      "source_url": "https://www.algoentropy.com",
+      "impact_score": 9.4
+    },
+    {
+      "id": "news-3",
+      "date": "August 2026",
+      "category": "hardware",
+      "title": "Kepler Activates Commercial Optical Space Relay Mesh",
+      "summary": "Provides commercial optical cross-links exceeding 100 Gbps, resolving the orbital data center backhaul bottleneck without waiting for ground passes.",
+      "badge": "Data Mesh",
+      "tags": ["Kepler", "Optical ISL", "Laser Backhaul"],
+      "source_url": "https://www.algoentropy.com",
+      "impact_score": 8.9
+    },
+    {
+      "id": "news-4",
+      "date": "May 2026",
+      "category": "europe",
+      "title": "Thales Alenia Space Concludes EU Project ASCEND",
+      "summary": "Feasibility study confirmed 200MW orbital data centers can decouple Europe's exponential AI compute growth from grid caps while preserving European digital sovereignty.",
+      "badge": "Sovereignty",
+      "tags": ["EU", "ASCEND", "Thales", "Sovereign Cloud"],
+      "source_url": "https://www.algoentropy.com",
+      "impact_score": 8.7
+    },
+    {
+      "id": "news-5",
+      "date": "April 2026",
+      "category": "hardware",
+      "title": "NVIDIA Announces Space-1 Vera Rubin Space Architecture",
+      "summary": "Purpose-built space architecture provides 25x AI compute efficiency over H100 with hardware-level Triple Modular Redundancy (TMR) for cosmic ray resilience.",
+      "badge": "Silicon",
+      "tags": ["NVIDIA", "Vera Rubin", "TMR", "Hardware"],
+      "source_url": "https://www.algoentropy.com",
+      "impact_score": 9.5
+    },
+    {
+      "id": "news-6",
+      "date": "November 2025",
+      "category": "starcloud",
+      "title": "Starcloud-1 Trains NanoGPT in Orbit with NVIDIA H100",
+      "summary": "World's first operation and training run of an unshielded COTS data center GPU in space under vacuum, validating passive radiative cooling loops.",
+      "badge": "Flight Heritage",
+      "tags": ["Starcloud", "H100", "NanoGPT", "Flight Heritage"],
+      "source_url": "https://www.algoentropy.com",
+      "impact_score": 9.9
+    },
+    {
+      "id": "news-7",
+      "date": "Late 2025",
+      "category": "google",
+      "title": "Google Research Unveils 'Project Suncatcher' Space TPU Research",
+      "summary": "Google Research tested TPU Trillium (v6e) for space environments in partnership with Planet Labs, demonstrating high intrinsic fault tolerance.",
+      "badge": "Moonshot",
+      "tags": ["Google", "TPU", "Trillium", "Planet Labs"],
+      "source_url": "https://www.algoentropy.com",
+      "impact_score": 9.1
+    }
+  ]
+}
