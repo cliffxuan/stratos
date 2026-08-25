@@ -9,7 +9,7 @@ COPY frontend/ ./
 RUN bun run build
 
 # Stage 2: Setup Python FastAPI Runtime
-FROM python:3.12-slim
+FROM python:3.14-slim
 WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1
