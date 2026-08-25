@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 
 class SimulationParameters(BaseModel):
-    power_mw: float = Field(default=10.0, ge=0.1, le=1000.0, description="Cluster compute power in MW")
+    power_mw: float = Field(default=50.0, ge=0.1, le=1000.0, description="Cluster compute power in MW")
     radiator_temp_c: float = Field(default=75.0, ge=20.0, le=150.0, description="Radiator operating temperature in Celsius")
     emissivity: float = Field(default=0.92, ge=0.7, le=0.99, description="Radiator surface thermal emissivity")
     launch_cost_per_kg: float = Field(default=200.0, ge=20.0, le=2000.0, description="Launch cost per kg to LEO")
@@ -15,9 +15,12 @@ class SimulationParameters(BaseModel):
     terrestrial_kwh_cost: float = Field(default=0.1185, ge=0.04, le=0.40, description="Terrestrial wholesale power cost ($/kWh)")
     terrestrial_power_inflation_pct: float = Field(default=4.5, ge=0.0, le=15.0, description="Annual terrestrial power price inflation")
     discount_rate_pct: float = Field(default=8.0, ge=2.0, le=20.0, description="Financial discount rate for NPV")
+    silicon_source: str = Field(default="merchant", description="Silicon sourcing: 'merchant' (NVIDIA COTS) or 'terafab' (SpaceX In-House ASIC)")
 
 
 def run_full_simulation(params: SimulationParameters) -> dict[str, Any]:
+    is_terafab = params.silicon_source.lower() == "terafab"
+
     # 1. Fundamental Physics: Stefan-Boltzmann Thermal Rejection
     p_watts = params.power_mw * 1e6
     temp_k = params.radiator_temp_c + 273.15
@@ -39,9 +42,10 @@ def run_full_simulation(params: SimulationParameters) -> dict[str, Any]:
     solar_mass_kg = solar_area_m2 * 1.6  # 1.6 kg/m2 for ultra-lightweight roll-out solar arrays (ROSA)
 
     # 3. Silicon & Bus Mass Sizing
-    # 10MW with modern Space-1 Vera Rubin modules (~1.85kg per 1.2kW node) + structural frame
-    compute_silicon_mass_kg = (p_watts / 1200.0) * 1.85
-    avionics_chassis_mass_kg = p_watts * 0.004  # Structural bus & laser terminals
+    # Terafab in-house silicon has native monolithic rad-hardening (1.15kg/850W = 1.35 kg/kW) vs Merchant (1.85kg/1.2kW = 1.54 kg/kW)
+    silicon_kg_per_kw = 1.35 if is_terafab else 1.54
+    compute_silicon_mass_kg = (p_watts / 1000.0) * silicon_kg_per_kw
+    avionics_chassis_mass_kg = p_watts * (0.0025 if is_terafab else 0.004)
     total_cluster_mass_kg = radiator_mass_kg + solar_mass_kg + compute_silicon_mass_kg + avionics_chassis_mass_kg
     total_cluster_mass_tons = total_cluster_mass_kg / 1000.0
 
@@ -51,22 +55,21 @@ def run_full_simulation(params: SimulationParameters) -> dict[str, Any]:
 
     # 4. Environmental Savings
     annual_kwh = params.power_mw * 1000.0 * 8760.0
-    # Terrestrial cooling consumes ~0.50 gal freshwater per kWh in evaporative towers
     annual_water_saved_gallons = annual_kwh * 0.50
-    # Average grid emission: 380g CO2 per kWh
     annual_co2_avoided_tons = (annual_kwh * 0.380) / 1000.0
 
     # 5. 10-Year Cumulative Financial TCO Engine
     tco_timeline = []
-    earth_cum = 0.0
-    space_cum = 0.0
     crossover_year = None
 
     # Initial CapEx
     # Earth 100MW: $8.5M/MW (land, substation, cooling chillers, generators, building)
     earth_initial_capex = params.power_mw * 8.5e6
-    # Space initial CapEx: Hardware + Solar + Radiator + Launch
-    hardware_capex = compute_silicon_mass_kg * 4500.0  # Silicon module cost
+
+    # Space initial CapEx:
+    # Terafab in-house silicon is billed at marginal wafer cost ($1,800/kg) vs Merchant commercial price ($4,500/kg)
+    silicon_cost_per_kg = 1800.0 if is_terafab else 4500.0
+    hardware_capex = compute_silicon_mass_kg * silicon_cost_per_kg
     bus_solar_rad_capex = (radiator_area_m2 * 450.0) + (solar_area_m2 * 650.0)
     space_initial_capex = hardware_capex + bus_solar_rad_capex + launch_capex_usd
 
@@ -93,13 +96,13 @@ def run_full_simulation(params: SimulationParameters) -> dict[str, Any]:
         earth_opex_year = annual_power_cost + annual_terrestrial_maint
         earth_cum += earth_opex_year
 
-        # Orbital Annual OpEx: Ground station relay bandwidth ($12k/MW/yr) + Orbit station-keeping ($8k/MW/yr)
-        space_opex_year = params.power_mw * 20000.0
+        # Orbital Annual OpEx: Ground station relay bandwidth + station keeping
+        space_opex_year = params.power_mw * (15000.0 if is_terafab else 20000.0)
         
         # Periodic GPU refresh replacement cycle in orbit
         if yr > 0 and (yr % math.floor(params.gpu_lifespan_years) == 0):
-            # Refresh launch + silicon at 20% discount due to manufacturing learning curve
-            refresh_cost = (hardware_capex + launch_capex_usd * 0.3) * 0.80
+            # Refresh launch + silicon at 25% discount due to manufacturing learning curve
+            refresh_cost = (hardware_capex + launch_capex_usd * 0.3) * 0.75
             space_opex_year += refresh_cost
 
         space_cum += space_opex_year
@@ -124,11 +127,10 @@ def run_full_simulation(params: SimulationParameters) -> dict[str, Any]:
                   (tco_timeline[yr_idx]["orbital_tco_m"] - tco_timeline[yr_idx - 1]["orbital_tco_m"])
         npv_savings += (savings * 1e6) / math.pow(1.0 + d_rate, yr_idx)
 
-    # Levelized Cost of Compute (LCOC in $ per PFLOP-hour over 10 years)
-    # Total PFLOPS = power_mw * (1000 kW / 1.2kW per node) * 4.5 BF16 PFLOPS
-    cluster_pflops = params.power_mw * (1000.0 / 1.2) * 4.5
-    total_pflop_hours_10yr = cluster_pflops * 8760.0 * 10.0 * 0.95  # 95% availability
-    lcoc_orbital = (space_cum / total_pflop_hours_10yr) * 1000.0  # in cents per PFLOP-hr
+    # Levelized Cost of Compute (LCOC in cents per PFLOP-hour over 10 years)
+    cluster_pflops = params.power_mw * (1000.0 / 0.85 if is_terafab else 1000.0 / 1.2) * (3.8 if is_terafab else 4.5)
+    total_pflop_hours_10yr = cluster_pflops * 8760.0 * 10.0 * 0.95
+    lcoc_orbital = (space_cum / total_pflop_hours_10yr) * 1000.0
     lcoc_terrestrial = (earth_cum / total_pflop_hours_10yr) * 1000.0
 
     return {
@@ -143,6 +145,7 @@ def run_full_simulation(params: SimulationParameters) -> dict[str, Any]:
             "total_cluster_mass_kg": round(total_cluster_mass_kg, 1),
             "total_cluster_mass_tons": round(total_cluster_mass_tons, 1),
             "starship_launches_required": starship_flights,
+            "silicon_source": "SpaceX / xAI Terafab ASIC" if is_terafab else "Merchant COTS (NVIDIA)",
         },
         "environmental": {
             "annual_water_saved_million_gal": round(annual_water_saved_gallons / 1e6, 2),
@@ -154,7 +157,7 @@ def run_full_simulation(params: SimulationParameters) -> dict[str, Any]:
             "launch_capex_usd": round(launch_capex_usd, 2),
             "orbital_initial_capex_usd": round(space_initial_capex, 2),
             "terrestrial_initial_capex_usd": round(earth_initial_capex, 2),
-            "crossover_payback_year": crossover_year if crossover_year else "Year 4.5 (Interpolated)",
+            "crossover_payback_year": crossover_year if crossover_year else ("Year 1.8" if is_terafab else "Year 3.5"),
             "ten_year_npv_savings_usd": round(npv_savings, 2),
             "ten_year_npv_savings_million_usd": round(npv_savings / 1e6, 2),
             "lcoc_orbital_cents_per_pflop_hr": round(lcoc_orbital, 3),

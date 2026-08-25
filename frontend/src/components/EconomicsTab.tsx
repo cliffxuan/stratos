@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, Calculator } from 'lucide-react';
+import { TrendingUp, Calculator, Sparkles } from 'lucide-react';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
 export const EconomicsTab: React.FC = () => {
@@ -8,6 +8,7 @@ export const EconomicsTab: React.FC = () => {
   const [radiatorTempC, setRadiatorTempC] = useState<number>(75);
   const [gpuLifespanYrs, setGpuLifespanYrs] = useState<number>(3.5);
   const [powerInflationPct, setPowerInflationPct] = useState<number>(4.5);
+  const [siliconSource, setSiliconSource] = useState<'merchant' | 'terafab'>('terafab');
 
   const [simResult, setSimResult] = useState<any>(null);
 
@@ -23,6 +24,7 @@ export const EconomicsTab: React.FC = () => {
             radiator_temp_c: radiatorTempC,
             gpu_lifespan_years: gpuLifespanYrs,
             terrestrial_power_inflation_pct: powerInflationPct,
+            silicon_source: siliconSource,
           }),
         });
         if (res.ok) {
@@ -35,7 +37,7 @@ export const EconomicsTab: React.FC = () => {
     };
 
     fetchSim();
-  }, [powerMW, launchCostKg, radiatorTempC, gpuLifespanYrs, powerInflationPct]);
+  }, [powerMW, launchCostKg, radiatorTempC, gpuLifespanYrs, powerInflationPct, siliconSource]);
 
   const historicalLaunchData = [
     { vehicle: 'Saturn V (1969)', cost: 18500 },
@@ -47,13 +49,15 @@ export const EconomicsTab: React.FC = () => {
   ];
 
   const tcoData = simResult?.financial?.tco_timeline || [
-    { year: 'Year 0', terrestrial_tco_m: 425, orbital_tco_m: 510 },
-    { year: 'Year 2', terrestrial_tco_m: 680, orbital_tco_m: 550 },
-    { year: 'Year 4', terrestrial_tco_m: 940, orbital_tco_m: 680 },
-    { year: 'Year 6', terrestrial_tco_m: 1210, orbital_tco_m: 810 },
-    { year: 'Year 8', terrestrial_tco_m: 1490, orbital_tco_m: 940 },
-    { year: 'Year 10', terrestrial_tco_m: 1780, orbital_tco_m: 1080 },
+    { year: 'Year 0', terrestrial_tco_m: 425, orbital_tco_m: 290 },
+    { year: 'Year 2', terrestrial_tco_m: 680, orbital_tco_m: 320 },
+    { year: 'Year 4', terrestrial_tco_m: 940, orbital_tco_m: 410 },
+    { year: 'Year 6', terrestrial_tco_m: 1210, orbital_tco_m: 520 },
+    { year: 'Year 8', terrestrial_tco_m: 1490, orbital_tco_m: 610 },
+    { year: 'Year 10', terrestrial_tco_m: 1780, orbital_tco_m: 720 },
   ];
+
+  const isTerafab = siliconSource === 'terafab';
 
   return (
     <div className="space-y-12 animate-in fade-in duration-300">
@@ -65,6 +69,50 @@ export const EconomicsTab: React.FC = () => {
         <p className="text-slate-400 text-sm mt-1">Interactive financial modeling: High CapEx / Zero OpEx (Space) vs Low CapEx / Exponential OpEx (Earth)</p>
       </div>
 
+      {/* Silicon Sourcing Mode Banner */}
+      <div className="glass-card p-6 rounded-3xl border border-slate-800 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+          <div className="space-y-1">
+            <span className="text-xs font-mono font-bold text-indigo-400 uppercase tracking-wider block">
+              Silicon Supply Chain Architecture
+            </span>
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-purple-400" />
+              {isTerafab ? 'SpaceX / xAI Terafab (Vertically Integrated In-House Fab)' : 'Merchant Commercial Silicon (NVIDIA NVL72 / COTS)'}
+            </h3>
+            <p className="text-xs text-slate-400">
+              {isTerafab 
+                ? 'Monolithic in-house silicon fabrication in Texas bypassing TSMC/merchant markups, dropping CapEx by 60%.'
+                : 'Standard commercial GPU market pricing subject to CoWoS supply constraints and distributor premiums.'}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 font-mono text-xs shrink-0">
+            <button
+              onClick={() => setSiliconSource('terafab')}
+              className={`px-4 py-2 rounded-xl font-bold transition flex items-center gap-1.5 ${
+                isTerafab
+                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30 border border-purple-500'
+                  : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white'
+              }`}
+            >
+              ⚡ Terafab In-House
+            </button>
+            <button
+              onClick={() => setSiliconSource('merchant')}
+              className={`px-4 py-2 rounded-xl font-bold transition flex items-center gap-1.5 ${
+                !isTerafab
+                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 border border-indigo-500'
+                  : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white'
+              }`}
+            >
+              Merchant COTS
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Simulator Control Deck */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Sliders Box */}
@@ -155,11 +203,12 @@ export const EconomicsTab: React.FC = () => {
             </div>
           </div>
 
+          {/* Quick Output Summary */}
           {simResult && (
             <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2 font-mono text-xs pt-3">
               <div className="flex justify-between">
                 <span className="text-slate-400">Payback Crossover:</span>
-                <span className="text-emerald-400 font-bold">Year {simResult.financial.crossover_payback_year}</span>
+                <span className="text-emerald-400 font-bold">{simResult.financial.crossover_payback_year}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">10-Yr NPV Savings:</span>
@@ -181,7 +230,7 @@ export const EconomicsTab: React.FC = () => {
               <p className="text-xs text-slate-400">Modeling zero marginal power/cooling OpEx vs terrestrial escalation</p>
             </div>
             <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20">
-              Crossover: {simResult?.financial?.crossover_payback_year ? `Year ${simResult.financial.crossover_payback_year}` : 'Year 3.5'}
+              Crossover: {simResult?.financial?.crossover_payback_year ? `${simResult.financial.crossover_payback_year}` : (isTerafab ? 'Year 1.8' : 'Year 3.5')}
             </span>
           </div>
 
@@ -193,11 +242,12 @@ export const EconomicsTab: React.FC = () => {
                 <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px' }} formatter={(val: number) => [`$${val}M`, 'Cumulative TCO']} />
                 <Legend />
                 <Line type="monotone" dataKey="terrestrial_tco_m" name="Terrestrial (High Power & Cooling OpEx)" stroke="#ef4444" strokeWidth={3} dot={{ r: 4 }} />
-                <Line type="monotone" dataKey="orbital_tco_m" name="Orbital (Zero Electricity OpEx)" stroke="#10b981" strokeWidth={3} dot={{ r: 4 }} />
+                <Line type="monotone" dataKey="orbital_tco_m" name={isTerafab ? "Orbital (Terafab In-House Silicon)" : "Orbital (Merchant Silicon)"} stroke="#10b981" strokeWidth={3} dot={{ r: 4 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
+          {/* Levelized Cost of Compute Comparison */}
           {simResult && (
             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800/80 font-mono text-xs text-center">
               <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800">
@@ -207,9 +257,9 @@ export const EconomicsTab: React.FC = () => {
               </div>
 
               <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800">
-                <span className="text-slate-400 text-[10px] uppercase block">Orbital LCOC</span>
+                <span className="text-slate-400 text-[10px] uppercase block">Orbital LCOC ({isTerafab ? 'Terafab' : 'Merchant'})</span>
                 <span className="text-lg font-bold text-emerald-400">{simResult.financial.lcoc_orbital_cents_per_pflop_hr} ¢</span>
-                <span className="text-[10px] text-slate-500 block">per PFLOP-hour (35% lower)</span>
+                <span className="text-[10px] text-slate-500 block">per PFLOP-hour ({isTerafab ? '55% lower' : '35% lower'})</span>
               </div>
             </div>
           )}

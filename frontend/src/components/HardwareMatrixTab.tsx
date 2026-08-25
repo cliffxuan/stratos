@@ -11,10 +11,10 @@ export const HardwareMatrixTab: React.FC<HardwareMatrixTabProps> = ({ hardware }
   const [sortKey, setSortKey] = useState<keyof HardwareProfile>('efficiency_tflops_watt');
   const [sortAsc, setSortAsc] = useState<boolean>(false);
 
-  const vendors = ['all', 'NVIDIA', 'Google', 'Groq', 'Tenstorrent', 'Cerebras'];
+  const vendors = ['all', 'SpaceX / xAI', 'NVIDIA', 'Google', 'Groq', 'Tenstorrent', 'Cerebras'];
 
   const filteredHardware = hardware.filter((h) => 
-    selectedVendor === 'all' ? true : h.vendor.toLowerCase() === selectedVendor.toLowerCase()
+    selectedVendor === 'all' ? true : h.vendor.toLowerCase().includes(selectedVendor.toLowerCase().split('/')[0].trim())
   );
 
   const sortedHardware = [...filteredHardware].sort((a, b) => {

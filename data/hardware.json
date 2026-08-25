@@ -1,6 +1,26 @@
 {
   "hardware": [
     {
+      "id": "spacex-terafab-compute1",
+      "vendor": "SpaceX / xAI",
+      "model": "Tera-Compute-1 (In-House 2nm ASIC)",
+      "generation": "2027 Terafab Vertically Integrated",
+      "tdp_watts": 850,
+      "bf16_tflops": 3800,
+      "fp8_tflops": 7600,
+      "efficiency_tflops_watt": 4.47,
+      "mass_kg": 1.15,
+      "power_to_mass_w_kg": 739.1,
+      "rad_hardening": "Native SOI Hardened Cells + Co-Packaged Optics",
+      "tid_tolerance_krad": 250,
+      "seu_cross_section_cm2": "8.0e-13",
+      "radiator_area_m2_per_kw": 1.220,
+      "cooling_loop": "Direct Heat-Pipe to Starship Hull Fairing",
+      "operating_junction_temp_c": 85,
+      "status": "Terafab Texas Deployment (2027)",
+      "heritage": "SpaceX Colossus Orbital Cluster Node"
+    },
+    {
       "id": "nv-vera-rubin-space",
       "vendor": "NVIDIA",
       "model": "Space-1 Vera Rubin NVL72",
@@ -79,26 +99,6 @@
       "operating_junction_temp_c": 75,
       "status": "Orbital Prototype (2027)",
       "heritage": "Google Project Suncatcher with Planet Labs"
-    },
-    {
-      "id": "google-tpu-v5e",
-      "vendor": "Google",
-      "model": "TPU v5e (Cost-Optimized ASIC)",
-      "generation": "2024 ASIC",
-      "tdp_watts": 250,
-      "bf16_tflops": 393,
-      "fp8_tflops": 786,
-      "efficiency_tflops_watt": 1.57,
-      "mass_kg": 0.90,
-      "power_to_mass_w_kg": 277.8,
-      "rad_hardening": "COTS Packaging",
-      "tid_tolerance_krad": 30,
-      "seu_cross_section_cm2": "2.2e-10",
-      "radiator_area_m2_per_kw": 1.450,
-      "cooling_loop": "Passive Radiative Fin Array",
-      "operating_junction_temp_c": 60,
-      "status": "Lab Vacuum Tested",
-      "heritage": "Google Cloud ML Cluster Heritage"
     },
     {
       "id": "groq-lpu-space",
