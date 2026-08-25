@@ -23,6 +23,8 @@ RUN uv sync --frozen --no-dev
 ENV PATH="/app/.venv/bin:$PATH"
 
 COPY main.py README.md ./
+COPY data ./data
+COPY services ./services
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
 ENV PORT=80
