@@ -23,7 +23,6 @@ export const App: React.FC = () => {
   const [hardwareProfiles, setHardwareProfiles] = useState<HardwareProfile[]>([]);
 
   useEffect(() => {
-    // 1. Fetch live NOAA space weather telemetry
     const fetchTelemetry = async () => {
       try {
         const res = await fetch('/api/telemetry');
@@ -36,7 +35,6 @@ export const App: React.FC = () => {
       }
     };
 
-    // 2. Fetch live satellite orbit coordinates
     const fetchSatellites = async () => {
       try {
         const res = await fetch('/api/satellites');
@@ -49,7 +47,6 @@ export const App: React.FC = () => {
       }
     };
 
-    // 3. Fetch dynamic laser crosslinks
     const fetchCrosslinks = async () => {
       try {
         const res = await fetch('/api/laser-mesh');
@@ -62,7 +59,6 @@ export const App: React.FC = () => {
       }
     };
 
-    // 4. Fetch power markets
     const fetchPowerGrid = async () => {
       try {
         const res = await fetch('/api/power-grid');
@@ -75,7 +71,6 @@ export const App: React.FC = () => {
       }
     };
 
-    // 5. Fetch silicon database
     const fetchHardware = async () => {
       try {
         const res = await fetch('/api/hardware');
@@ -88,7 +83,6 @@ export const App: React.FC = () => {
       }
     };
 
-    // 6. Fetch news timeline
     const fetchNews = async () => {
       try {
         const res = await fetch('/api/news');
@@ -108,7 +102,6 @@ export const App: React.FC = () => {
     fetchHardware();
     fetchNews();
 
-    // Fast polling for orbital positions (every 4 seconds) and NOAA weather (every 30 seconds)
     const orbitInterval = setInterval(() => {
       fetchSatellites();
       fetchCrosslinks();
@@ -125,7 +118,7 @@ export const App: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-[#070a13] text-slate-100 selection:bg-indigo-500 selection:text-white">
       <LiveTicker telemetry={telemetry} />
-      <Header currentTab={currentTab} onSelectTab={setCurrentTab} />
+      <Header currentTab={currentTab} onSelectTab={setCurrentTab} telemetry={telemetry} />
 
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {currentTab === 'summary' && <OverviewTab onSelectTab={setCurrentTab} />}
