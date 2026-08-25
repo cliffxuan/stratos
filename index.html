@@ -1,446 +1,1871 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stratos: Orbital Data Center Feasibility Study</title>
+    <title>Project Stratos: Orbital Data Center & Space AI Intelligence Platform</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Icons -->
+    <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; overflow-x: hidden; }
-        .chart-container { position: relative; width: 100%; height: 300px; margin: auto; }
-        @media (min-width: 768px) { .chart-container { height: 400px; } }
-        .tab-content { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
+        body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #f1f5f9; overflow-x: hidden; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .chart-container { position: relative; width: 100%; height: 320px; margin: auto; }
+        @media (min-width: 768px) { .chart-container { height: 380px; } }
+        .tab-content { display: none; opacity: 0; transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .tab-content.active { display: block; opacity: 1; }
-        .terminator { position: absolute; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(0,0,0,0.6) 50%, rgba(255,255,255,0) 50%); border-radius: 50%; display: none; pointer-events: none; z-index: 15; }
+        
+        .glass-card {
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card-hover {
+            transition: all 0.3s ease;
+        }
+        .glass-card-hover:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.2);
+        }
+        
+        .gradient-glow {
+            background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15), transparent 70%);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .terminator { 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            background: linear-gradient(90deg, rgba(0,0,0,0.85) 50%, rgba(255,255,255,0) 50%); 
+            border-radius: 50%; 
+            display: none; 
+            pointer-events: none; 
+            z-index: 15; 
+        }
         .sso-active .terminator { display: block; }
-        .player-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .player-card.hidden-item { display: none; }
-        .dot { transition: all 0.3s ease-in-out; }
-        input:checked ~ .dot { transform: translateX(100%); background-color: #4f46e5; }
-        .gradient-border { border: 2px solid transparent; background: linear-gradient(white, white) padding-box, linear-gradient(to right, #4f46e5, #ec4899) border-box; }
+        
+        .laser-beam {
+            position: absolute;
+            background: linear-gradient(90deg, rgba(56, 189, 248, 0.8), rgba(129, 140, 248, 0.2));
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+            display: none;
+        }
+        .isl-active .laser-beam { display: block; }
+        
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 2px;
+            background: linear-gradient(to bottom, #6366f1, #a855f7, #ec4899, #334155);
+        }
+        @media (min-width: 768px) {
+            .timeline-line::before {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+        
+        input[type=range] {
+            accent-color: #6366f1;
+        }
     </style>
-
-    <!-- Placeholder Comments Required by Prompt -->
-    <!-- Chosen Palette: "Orbital Clarity" - Slate background with Indigo/Pink accents for high-tech elements. -->
-    <!-- Application Structure Plan: 
-         1. Summary: High-level feasibility.
-         2. Energy: Thermodynamic comparison.
-         3. Mechanics: Interactive simulator with SSO/Terminator logic.
-         4. Strategic Landscape: Now includes SpaceX/Musk integration as the "Enabler" layer.
-         5. Economics: Detailed look at Starship's impact on launch pricing.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen bg-[#090d16] text-slate-100 selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 border-b border-indigo-900/40 text-xs py-2 px-4">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 animate-pulse">
+                    LIVE INTEL
+                </span>
+                <span class="text-slate-300">SpaceX unveils <strong>Project Starmind</strong> &bull; Starcloud raises <strong>$450M</strong> ($2.3B val) &bull; Google <strong>Project Suncatcher</strong> testing TPU v6e</span>
+            </div>
+            <div class="flex items-center space-x-4 text-slate-400">
+                <span class="hidden sm:inline"><i class="ph ph-clock mr-1"></i> Updated August 2026</span>
+                <span class="text-emerald-400 font-mono flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-400 inline-block mr-1.5 animate-ping"></span> Orbit Flight Active</span>
+            </div>
+        </div>
+    </div>
 
     <!-- Navigation -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <nav class="glass-card sticky top-0 z-50 border-b border-slate-800/80">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center cursor-pointer" onclick="switchTab('summary')">
-                    <i class="ph ph-planet text-indigo-600 text-2xl mr-2"></i>
-                    <span class="font-bold text-xl tracking-tight text-slate-900">Project Stratos</span>
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center cursor-pointer space-x-3" onclick="switchTab('summary')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+                        <i class="ph ph-planet text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-xl tracking-tight text-white flex items-center gap-1.5">
+                            STRATOS <span class="text-xs px-2 py-0.5 bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded font-mono font-normal">v2.6</span>
+                        </span>
+                        <p class="text-[10px] text-slate-400 tracking-wider uppercase font-mono">Orbital Cloud Intelligence</p>
+                    </div>
                 </div>
-                <div class="hidden md:flex items-center space-x-6">
-                    <button onclick="switchTab('summary')" class="nav-btn text-indigo-600 font-medium" data-target="summary">Summary</button>
-                    <button onclick="switchTab('energy')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="energy">Energy</button>
-                    <button onclick="switchTab('orbital')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="orbital">Mechanics</button>
-                    <button onclick="switchTab('players')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="players">Players</button>
-                    <button onclick="switchTab('economics')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="economics">Economics</button>
-                    <button onclick="switchTab('challenges')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="challenges">Challenges</button>
-                    <button onclick="switchTab('media')" class="nav-btn text-slate-500 font-medium hover:text-indigo-600" data-target="media">Media</button>
+
+                <!-- Desktop Nav -->
+                <div class="hidden xl:flex items-center space-x-1">
+                    <button onclick="switchTab('summary')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-indigo-400 bg-indigo-500/10 border border-indigo-500/20" data-target="summary">Overview</button>
+                    <button onclick="switchTab('timeline')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50" data-target="timeline">
+                        <span class="relative">
+                            News & Timeline
+                            <span class="absolute -top-1 -right-2 w-2 h-2 rounded-full bg-pink-500"></span>
+                        </span>
+                    </button>
+                    <button onclick="switchTab('energy')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50" data-target="energy">Thermodynamics</button>
+                    <button onclick="switchTab('orbital')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50" data-target="orbital">Mechanics Sim</button>
+                    <button onclick="switchTab('players')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50" data-target="players">Ecosystem</button>
+                    <button onclick="switchTab('economics')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50" data-target="economics">Economics & TCO</button>
+                    <button onclick="switchTab('challenges')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50" data-target="challenges">Challenges</button>
+                    <button onclick="switchTab('media')" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50" data-target="media">Media & Talks</button>
+                </div>
+
+                <!-- Quick Action -->
+                <div class="hidden md:flex items-center space-x-3">
+                    <button onclick="switchTab('orbital')" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-md shadow-indigo-600/30 transition flex items-center gap-1.5">
+                        <i class="ph ph-satellite text-sm"></i> Launch Sim
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="flex xl:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-slate-400 hover:text-white p-2 text-2xl focus:outline-none">
+                        <i class="ph ph-list" id="mobileMenuIcon"></i>
+                    </button>
                 </div>
             </div>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div id="mobileMenu" class="hidden xl:hidden border-t border-slate-800 bg-slate-950/95 px-4 pt-2 pb-4 space-y-1">
+            <button onclick="switchTab('summary'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Overview</button>
+            <button onclick="switchTab('timeline'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-pink-400 hover:bg-slate-800 flex justify-between items-center">News & Timeline <span class="text-[10px] bg-pink-500/20 px-2 py-0.5 rounded text-pink-300">New</span></button>
+            <button onclick="switchTab('energy'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Thermodynamics & Cooling</button>
+            <button onclick="switchTab('orbital'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Mechanics Simulator</button>
+            <button onclick="switchTab('players'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Ecosystem & Players</button>
+            <button onclick="switchTab('economics'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Economics & TCO</button>
+            <button onclick="switchTab('challenges'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Engineering Challenges</button>
+            <button onclick="switchTab('media'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">Media & Talks</button>
         </div>
     </nav>
 
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
 
-        <!-- SECTION 1: Summary -->
-        <div id="summary" class="tab-content active">
-            <div class="mb-12 text-center">
-                <h1 class="text-4xl font-bold text-slate-900 mb-4">The Orbital Data Infrastructure</h1>
-                <p class="text-lg text-slate-600 max-w-2xl mx-auto">Researching the transition of global computing to space: powered by infinite solar, cooled by the void, and enabled by the next generation of heavy-lift launch.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
-                    <i class="ph ph-lightning text-indigo-600 text-3xl mb-4"></i>
-                    <h3 class="text-sm font-bold text-slate-500 uppercase">Power Delta</h3>
-                    <p class="text-2xl font-bold">+35% Intensity</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
-                    <i class="ph ph-cpu text-pink-600 text-3xl mb-4"></i>
-                    <h3 class="text-sm font-bold text-slate-500 uppercase">Latency (LEO)</h3>
-                    <p class="text-2xl font-bold">&lt; 15 ms</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
-                    <i class="ph ph-rocket text-indigo-600 text-3xl mb-4"></i>
-                    <h3 class="text-sm font-bold text-slate-500 uppercase">Launch Price</h3>
-                    <p class="text-2xl font-bold">$200 / kg</p>
-                </div>
-            </div>
+        <!-- ========================================================================= -->
+        <!-- SECTION 1: SUMMARY / OVERVIEW -->
+        <!-- ========================================================================= -->
+        <div id="summary" class="tab-content active space-y-12">
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-                    <h2 class="text-2xl font-bold mb-4 text-slate-800">The Problem: Terrestrial Caps</h2>
-                    <p class="text-slate-600 leading-relaxed mb-4">
-                        Data centers are on track to consume <strong>3% of global electricity</strong> by 2030. On the current trajectory of AI training (demanding 10x compute every 18 months), we will reach a "Thermodynamic Wall" where the cost of cooling on Earth exceeds the value of the computation.
+            <!-- Hero Section -->
+            <div class="relative rounded-3xl overflow-hidden glass-card p-8 md:p-12 border border-slate-800 gradient-glow">
+                <div class="max-w-3xl space-y-6">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-mono">
+                        <i class="ph ph-sparkle text-sm"></i>
+                        <span>State of Orbital Compute &bull; 2026 Industry Report</span>
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                        The Orbital Data <br class="hidden sm:inline">
+                        <span class="gradient-text">Infrastructure Shift</span>
+                    </h1>
+                    <p class="text-lg sm:text-xl text-slate-300 leading-relaxed">
+                        Terrestrial AI data centers are colliding with the "Thermodynamic & Grid Wall"—5 to 7 year utility interconnection backlogs and massive freshwater consumption. Computing in Low Earth Orbit (LEO) unlocks <strong>24/7 unfiltered solar flux (1,361 W/m²)</strong> and <strong>infinite radiative cooling into the 3 Kelvin cosmic vacuum</strong>.
                     </p>
-                    <div class="flex items-center p-4 bg-slate-50 rounded-lg">
-                        <i class="ph ph-warning-circle text-orange-500 text-2xl mr-3"></i>
-                        <p class="text-sm text-slate-700"><strong>Critical Insight:</strong> Moving compute to space isn't just about efficiency; it's about avoiding the 40% energy waste inherent in terrestrial AC systems.</p>
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <button onclick="switchTab('timeline')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 transition flex items-center gap-2">
+                            <i class="ph ph-newspaper-clipping text-lg"></i> Read 2026 News & Breakthroughs
+                        </button>
+                        <button onclick="switchTab('orbital')" class="px-6 py-3 rounded-xl glass-card hover:bg-slate-800/80 text-slate-200 font-semibold text-sm border border-slate-700 transition flex items-center gap-2">
+                            <i class="ph ph-faders text-lg text-indigo-400"></i> Interactive Dynamics Simulator
+                        </button>
                     </div>
                 </div>
-                <div class="bg-gradient-to-br from-indigo-600 to-pink-600 p-8 rounded-2xl text-white">
-                    <h2 class="text-2xl font-bold mb-4">The Solution: Orbit</h2>
-                    <p class="text-indigo-100 leading-relaxed mb-6">
-                        By utilizing Sun-Synchronous Orbits and passive radiative cooling, orbital data centers achieve a near-perfect PUE of 1.05. This eliminates the need for Earth's freshwater and local power grids.
-                    </p>
-                    <button onclick="switchTab('orbital')" class="px-6 py-2 bg-white text-indigo-600 font-bold rounded-lg hover:bg-indigo-50 transition">Launch Simulator</button>
+            </div>
+
+            <!-- Key Metric Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-card glass-card-hover p-6 rounded-2xl border border-slate-800">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-2xl">
+                            <i class="ph ph-sun"></i>
+                        </div>
+                        <span class="text-[10px] font-mono uppercase px-2 py-1 rounded bg-indigo-500/20 text-indigo-300 font-semibold">AM0 Flux</span>
+                    </div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Solar Power Density</h3>
+                    <p class="text-3xl font-extrabold text-white mt-1">1,361 <span class="text-sm font-normal text-slate-400">W/m²</span></p>
+                    <p class="text-xs text-slate-400 mt-2">+35% vs peak Earth ground irradiance; continuous in Sun-Synchronous Orbits.</p>
+                </div>
+
+                <div class="glass-card glass-card-hover p-6 rounded-2xl border border-slate-800">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-2xl">
+                            <i class="ph ph-snowflake"></i>
+                        </div>
+                        <span class="text-[10px] font-mono uppercase px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 font-semibold">Radiative</span>
+                    </div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Cooling Efficiency (PUE)</h3>
+                    <p class="text-3xl font-extrabold text-emerald-400 mt-1">1.05 <span class="text-sm font-normal text-slate-400">PUE</span></p>
+                    <p class="text-xs text-slate-400 mt-2">Zero water consumption; eliminates 40% terrestrial fan and HVAC parasite loads.</p>
+                </div>
+
+                <div class="glass-card glass-card-hover p-6 rounded-2xl border border-slate-800">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400 text-2xl">
+                            <i class="ph ph-rocket-launch"></i>
+                        </div>
+                        <span class="text-[10px] font-mono uppercase px-2 py-1 rounded bg-pink-500/20 text-pink-300 font-semibold">Starship Cadence</span>
+                    </div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Target Launch Cost</h3>
+                    <p class="text-3xl font-extrabold text-pink-400 mt-1">&lt; $200 <span class="text-sm font-normal text-slate-400">/ kg</span></p>
+                    <p class="text-xs text-slate-400 mt-2">Starship Block 2/3 payload capacity (100T-150T to LEO) enables modular rack deployment.</p>
+                </div>
+
+                <div class="glass-card glass-card-hover p-6 rounded-2xl border border-slate-800">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-2xl">
+                            <i class="ph ph-cpu"></i>
+                        </div>
+                        <span class="text-[10px] font-mono uppercase px-2 py-1 rounded bg-cyan-500/20 text-cyan-300 font-semibold">Validated 2025</span>
+                    </div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">In-Orbit AI Training</h3>
+                    <p class="text-3xl font-extrabold text-cyan-400 mt-1">H100 <span class="text-sm font-normal text-slate-400">Heritage</span></p>
+                    <p class="text-xs text-slate-400 mt-2">Starcloud-1 trained NanoGPT in orbit; SpaceX AI1 & Google Suncatcher in test pipeline.</p>
                 </div>
             </div>
+
+            <!-- Problem vs Solution Comparison -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="glass-card p-8 rounded-3xl border border-slate-800 space-y-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-xl">
+                            <i class="ph ph-fire"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">The Terrestrial Wall</h2>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed">
+                        Data centers are on track to consume over <strong>1,000 TWh (&gt;3.5% of global power)</strong> by 2030. AI cluster scaling is no longer constrained by chip supply, but by physical reality on Earth:
+                    </p>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start">
+                            <i class="ph ph-x-circle text-rose-400 text-lg mr-2.5 mt-0.5 flex-shrink-0"></i>
+                            <span><strong>5-7 Year Grid Queues:</strong> High-voltage substation interconnects in major hubs (Northern Virginia, Dublin, Silicon Valley) are saturated.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ph ph-x-circle text-rose-400 text-lg mr-2.5 mt-0.5 flex-shrink-0"></i>
+                            <span><strong>Massive Water Depletion:</strong> A 100MW data center consumes up to 2 million gallons of freshwater daily for evaporative cooling.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ph ph-x-circle text-rose-400 text-lg mr-2.5 mt-0.5 flex-shrink-0"></i>
+                            <span><strong>Thermal Parasite Load:</strong> 35%–45% of total power input is wasted on chillers, fans, and cooling towers rather than compute.</span>
+                        </li>
+                    </ul>
+                    <div class="p-4 rounded-xl bg-rose-950/30 border border-rose-800/40 text-xs text-rose-300">
+                        <i class="ph ph-warning-octagon mr-1 text-sm inline-block align-text-bottom"></i>
+                        <strong>Grid Cap:</strong> Major utilities have halted new 50MW+ data center permits without dedicated self-funded nuclear/gas infrastructure.
+                    </div>
+                </div>
+
+                <div class="glass-card p-8 rounded-3xl border border-slate-800 space-y-6 relative overflow-hidden">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl">
+                            <i class="ph ph-flying-saucer"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">The Orbital Solution</h2>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed">
+                        Low Earth Orbit converts space into an industrial computing layer, operating as a clean energy sovereign cloud:
+                    </p>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start">
+                            <i class="ph ph-check-circle text-emerald-400 text-lg mr-2.5 mt-0.5 flex-shrink-0"></i>
+                            <span><strong>Continuous Solar Capture:</strong> Sun-Synchronous Dawn-Dusk orbits provide 100% duty cycle solar power without battery buffer cycling.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ph ph-check-circle text-emerald-400 text-lg mr-2.5 mt-0.5 flex-shrink-0"></i>
+                            <span><strong>Passive Vacuum Radiators:</strong> Heat is radiated into space via liquid loop heat pipes, requiring zero water and near-zero parasitic energy.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ph ph-check-circle text-emerald-400 text-lg mr-2.5 mt-0.5 flex-shrink-0"></i>
+                            <span><strong>Zero Permitting Bottleneck:</strong> Launch cadence replaces utility queues; modular satellites scale capacity linearly.</span>
+                        </li>
+                    </ul>
+                    <div class="p-4 rounded-xl bg-indigo-950/40 border border-indigo-800/40 text-xs text-indigo-200">
+                        <i class="ph ph-lightning mr-1 text-sm inline-block align-text-bottom text-indigo-400"></i>
+                        <strong>Optical Mesh:</strong> Space-to-space laser cross-links (ISL) connect orbital clusters at speed-of-light in vacuum (300,000 km/s vs 200,000 km/s in fiber).
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2026 Spotlight Cards -->
+            <div class="glass-card p-8 rounded-3xl border border-slate-800">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="ph ph-sparkle text-indigo-400"></i> 2025–2026 Key Industry Pillars
+                        </h3>
+                        <p class="text-xs text-slate-400">Major hyperscalers and startups transitioning from concept to operational hardware</p>
+                    </div>
+                    <button onclick="switchTab('timeline')" class="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 self-start sm:self-auto">
+                        View Full Roadmap <i class="ph ph-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-pink-400">SpaceX</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-pink-500/10 text-pink-300 border border-pink-500/20">Project Starmind</span>
+                        </div>
+                        <h4 class="font-bold text-white text-sm mb-1">AI1 Satellite Constellation</h4>
+                        <p class="text-xs text-slate-400">20m tall compute nodes with 70m deployable radiator wings powered by NVIDIA Vera Rubin NVL72 architectures for agentic AI workloads.</p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-indigo-400">Starcloud</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">$450M Total Raised</span>
+                        </div>
+                        <h4 class="font-bold text-white text-sm mb-1">Starcloud-1 & Starcloud-2</h4>
+                        <p class="text-xs text-slate-400">World's first orbital H100 AI training (Nov 2025). Starcloud-2 multi-GPU cluster scheduled for Q4 2026 launch backed by NVIDIA and Cisco.</p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-cyan-400">Google</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">Project Suncatcher</span>
+                        </div>
+                        <h4 class="font-bold text-white text-sm mb-1">Orbital TPU Fleets</h4>
+                        <p class="text-xs text-slate-400">Radiation-tested TPU Trillium (v6e) nodes linked via high-speed optical crosslinks; orbital prototype mission planned with Planet Labs.</p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-emerald-400">EU ASCEND</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Thales Alenia Space</span>
+                        </div>
+                        <h4 class="font-bold text-white text-sm mb-1">200MW Sovereign Cloud</h4>
+                        <p class="text-xs text-slate-400">EU Commission study confirmed technical viability of 200MW space data centers to bypass European grid caps and protect digital sovereignty.</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <!-- SECTION 2: Energy -->
-        <div id="energy" class="tab-content">
-            <h2 class="text-2xl font-bold mb-8">Thermodynamics: Earth vs Space</h2>
+        <!-- ========================================================================= -->
+        <!-- SECTION 2: DEVELOPMENTS, NEWS & TIMELINE (NEW) -->
+        <!-- ========================================================================= -->
+        <div id="timeline" class="tab-content space-y-12">
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-white flex items-center gap-2">
+                        <i class="ph ph-newspaper text-indigo-400"></i> Industry Intelligence & News Timeline
+                    </h2>
+                    <p class="text-slate-400 text-sm mt-1">Verified milestones, regulatory filings, venture rounds, and technical breakthroughs (2024–2027+)</p>
+                </div>
+                
+                <!-- Category Filter Buttons -->
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <button onclick="filterTimeline('all')" class="timeline-filter-btn active px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-medium transition" data-category="all">All Updates</button>
+                    <button onclick="filterTimeline('spacex')" class="timeline-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 font-medium transition" data-category="spacex">SpaceX</button>
+                    <button onclick="filterTimeline('starcloud')" class="timeline-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 font-medium transition" data-category="starcloud">Starcloud</button>
+                    <button onclick="filterTimeline('google')" class="timeline-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 font-medium transition" data-category="google">Google</button>
+                    <button onclick="filterTimeline('europe')" class="timeline-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 font-medium transition" data-category="europe">EU / ASCEND</button>
+                    <button onclick="filterTimeline('hardware')" class="timeline-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 font-medium transition" data-category="hardware">Hardware / NVIDIA</button>
+                </div>
+            </div>
+
+            <!-- Featured Breaking Story -->
+            <div class="glass-card p-8 rounded-3xl border border-indigo-500/30 relative overflow-hidden bg-gradient-to-br from-indigo-950/50 via-slate-900/80 to-purple-950/50">
+                <div class="flex flex-wrap items-center gap-2 mb-4">
+                    <span class="px-2.5 py-1 rounded-full bg-pink-500 text-white text-[11px] font-extrabold uppercase tracking-wider">BREAKING DEVELOPMENT</span>
+                    <span class="text-xs font-mono text-slate-400">August 2026</span>
+                </div>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-white mb-3">
+                    Elon Musk Unveils SpaceX "Project Starmind" with NVIDIA Vera Rubin AI1 Constellation
+                </h3>
+                <p class="text-slate-300 leading-relaxed max-w-4xl text-sm sm:text-base mb-6">
+                    SpaceX has officially entered the orbital data center market with <strong>Project Starmind</strong>, a dedicated constellation of heavy compute satellites designed to power next-generation agentic AI and Grok models directly from Low Earth Orbit. Engineered with <strong>20-meter vertical chassis</strong> and <strong>70-meter deployable liquid radiator wings</strong>, each satellite node integrates space-optimized <strong>NVIDIA Vera Rubin NVL72</strong> architectures. Initial launches are targeted for <strong>Q4 2027</strong> via Starship from the Bastrop, TX Gigasat facility, with FCC filings exploring an eventual constellation of up to one million compute-enabled nodes.
+                </p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
+                    <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                        <span class="text-slate-400 block">Payload Platform</span>
+                        <span class="font-bold text-white text-sm">AI1 Satellite Bus</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                        <span class="text-slate-400 block">Compute Partner</span>
+                        <span class="font-bold text-indigo-400 text-sm">NVIDIA Vera Rubin</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                        <span class="text-slate-400 block">Active Cooling</span>
+                        <span class="font-bold text-emerald-400 text-sm">70m Liquid Radiators</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+                        <span class="text-slate-400 block">Launch Target</span>
+                        <span class="font-bold text-pink-400 text-sm">Q4 2027 (Starship)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Timeline Feed -->
+            <div class="relative timeline-line space-y-8 pl-8 md:pl-0">
+                
+                <!-- Item 1: Starcloud $450M Extension -->
+                <div class="timeline-item relative md:grid md:grid-cols-2 md:gap-8 items-center" data-category="starcloud">
+                    <div class="md:text-right pr-0 md:pr-6 mb-2 md:mb-0">
+                        <span class="inline-block px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-300 font-mono text-xs font-bold mb-1">August 2026</span>
+                        <h4 class="text-lg font-bold text-white">Starcloud Raises $250M Series A Extension ($450M Total)</h4>
+                        <p class="text-xs text-slate-400 mt-1">Valuation hits $2.3 Billion; round includes strategic investment from NVIDIA, Cisco, and Benchmark.</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl border border-slate-800 md:pl-6">
+                        <div class="flex items-center space-x-2 text-xs text-indigo-400 font-bold mb-2">
+                            <i class="ph ph-trend-up"></i>
+                            <span>COMMERCIAL CAPITAL ACCELERATION</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Following the successful execution of the Starcloud-1 orbital H100 test, Starcloud secured $250M in new capital to finance the mass fabrication of Starcloud-2 multi-GPU orbital server clusters and lock in multi-launch capacity on heavy launch vehicles.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Item 2: Kepler Communications Optical Relay -->
+                <div class="timeline-item relative md:grid md:grid-cols-2 md:gap-8 items-center" data-category="hardware">
+                    <div class="md:order-2 pl-0 md:pl-6 mb-2 md:mb-0">
+                        <span class="inline-block px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold mb-1">August 2026</span>
+                        <h4 class="text-lg font-bold text-white">Kepler Activates Commercial Optical Space Relay Mesh</h4>
+                        <p class="text-xs text-slate-400 mt-1">High-bandwidth space-to-space optical cross-links solve the orbital data backhaul bottleneck.</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl border border-slate-800 md:text-right md:pr-6 md:order-1">
+                        <div class="flex items-center md:justify-end space-x-2 text-xs text-cyan-400 font-bold mb-2">
+                            <i class="ph ph-broadcast"></i>
+                            <span>DATA BACKHAUL INFRASTRUCTURE</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Kepler Communications brought its first-generation commercial optical relay service online, providing real-time laser inter-satellite connectivity exceeding 100 Gbps, enabling orbital compute nodes to ingest sensor data and stream AI inference without waiting for ground station passes.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Item 3: EU Project ASCEND Conclusions -->
+                <div class="timeline-item relative md:grid md:grid-cols-2 md:gap-8 items-center" data-category="europe">
+                    <div class="md:text-right pr-0 md:pr-6 mb-2 md:mb-0">
+                        <span class="inline-block px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold mb-1">May 2026</span>
+                        <h4 class="text-lg font-bold text-white">Thales Alenia Space Concludes EU Project ASCEND</h4>
+                        <p class="text-xs text-slate-400 mt-1">Feasibility study validates 200MW orbital sovereign cloud for European digital independence.</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl border border-slate-800 md:pl-6">
+                        <div class="flex items-center space-x-2 text-xs text-emerald-400 font-bold mb-2">
+                            <i class="ph ph-shield-check"></i>
+                            <span>SOVEREIGNTY & NET-ZERO EMISSIONS</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            The European Commission-backed ASCEND study concluded that orbital data centers can decouple Europe's exponential AI compute growth from its fragile power grid while insulating sensitive EU data from foreign jurisdictions like the US Cloud Act. The study established requirements for eco-reusable launchers.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Item 4: NVIDIA Space-1 Vera Rubin Module -->
+                <div class="timeline-item relative md:grid md:grid-cols-2 md:gap-8 items-center" data-category="hardware">
+                    <div class="md:order-2 pl-0 md:pl-6 mb-2 md:mb-0">
+                        <span class="inline-block px-2.5 py-1 rounded bg-purple-500/20 text-purple-300 font-mono text-xs font-bold mb-1">April 2026</span>
+                        <h4 class="text-lg font-bold text-white">NVIDIA Announces Space-1 Vera Rubin Space Module</h4>
+                        <p class="text-xs text-slate-400 mt-1">Purpose-built space architecture provides 25x AI compute efficiency over H100 in orbit.</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl border border-slate-800 md:text-right md:pr-6 md:order-1">
+                        <div class="flex items-center md:justify-end space-x-2 text-xs text-purple-400 font-bold mb-2">
+                            <i class="ph ph-microchip"></i>
+                            <span>HARDWARE OPTIMIZATION</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            NVIDIA introduced the Space-1 Vera Rubin module and the Vera CPU, featuring integrated Triple Modular Redundancy (TMR) for cosmic ray Single Event Upset (SEU) mitigation and enhanced conductive thermal dissipation tailored for vacuum radiator heat pipes.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Item 5: Starcloud Rebrand & YC Unicorn -->
+                <div class="timeline-item relative md:grid md:grid-cols-2 md:gap-8 items-center" data-category="starcloud">
+                    <div class="md:text-right pr-0 md:pr-6 mb-2 md:mb-0">
+                        <span class="inline-block px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-300 font-mono text-xs font-bold mb-1">March 2026</span>
+                        <h4 class="text-lg font-bold text-white">Lumen Orbit Rebrands to Starcloud, Reaches Unicorn Status</h4>
+                        <p class="text-xs text-slate-400 mt-1">Becomes the fastest company in Y Combinator history to surpass $1B valuation.</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl border border-slate-800 md:pl-6">
+                        <div class="flex items-center space-x-2 text-xs text-indigo-400 font-bold mb-2">
+                            <i class="ph ph-lightning"></i>
+                            <span>VENTURE MILESTONE</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Following rapid technological milestones and market interest in off-planet compute, Lumen Orbit rebranded to Starcloud, establishing headquarters in Redmond, Washington, to scale commercial orbital server hosting for enterprise AI developers.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Item 6: Starcloud-1 In-Orbit H100 AI Training -->
+                <div class="timeline-item relative md:grid md:grid-cols-2 md:gap-8 items-center" data-category="starcloud">
+                    <div class="md:order-2 pl-0 md:pl-6 mb-2 md:mb-0">
+                        <span class="inline-block px-2.5 py-1 rounded bg-pink-500/20 text-pink-300 font-mono text-xs font-bold mb-1">November 2025</span>
+                        <h4 class="text-lg font-bold text-white">Starcloud-1 Trains NanoGPT in Orbit with NVIDIA H100</h4>
+                        <p class="text-xs text-slate-400 mt-1">First-ever operation and training run of an unshielded COTS data center GPU in space.</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl border border-slate-800 md:text-right md:pr-6 md:order-1">
+                        <div class="flex items-center md:justify-end space-x-2 text-xs text-pink-400 font-bold mb-2">
+                            <i class="ph ph-check-circle"></i>
+                            <span>FLIGHT HERITAGE VALIDATION</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            The Starcloud-1 test satellite achieved a historic breakthrough by operating an NVIDIA H100 GPU under vacuum and executing transformer training routines in Low Earth Orbit without thermal throttling, validating passive radiative cooling loops and basic radiation tolerance.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Item 7: Google Project Suncatcher -->
+                <div class="timeline-item relative md:grid md:grid-cols-2 md:gap-8 items-center" data-category="google">
+                    <div class="md:text-right pr-0 md:pr-6 mb-2 md:mb-0">
+                        <span class="inline-block px-2.5 py-1 rounded bg-blue-500/20 text-blue-300 font-mono text-xs font-bold mb-1">Late 2025</span>
+                        <h4 class="text-lg font-bold text-white">Google Unveils "Project Suncatcher" Space TPU Research</h4>
+                        <p class="text-xs text-slate-400 mt-1">Google Research tests Trillium (v6e) TPUs for space environments in partnership with Planet Labs.</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl border border-slate-800 md:pl-6">
+                        <div class="flex items-center space-x-2 text-xs text-blue-400 font-bold mb-2">
+                            <i class="ph ph-cube"></i>
+                            <span>CUSTOM ASIC SPACE RESEARCH</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Google Research published its moonshot framework for solar-powered space ML clusters. Testing revealed that Google's Trillium TPU architecture exhibited surprising radiation resilience, leading to a planned 2-satellite validation mission with Planet Labs in 2027.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- SECTION 3: THERMODYNAMICS & ENERGY -->
+        <!-- ========================================================================= -->
+        <div id="energy" class="tab-content space-y-12">
+            
+            <div>
+                <h2 class="text-3xl font-extrabold text-white flex items-center gap-2">
+                    <i class="ph ph-fire text-indigo-400"></i> Thermodynamics: Earth vs Orbital Physics
+                </h2>
+                <p class="text-slate-400 text-sm mt-1">Comparing power generation, cooling physics, and parasitic energy overhead</p>
+            </div>
+
+            <!-- Charts Row 1 -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold mb-4">Projected Global Compute Demand</h3>
+                
+                <!-- Global Compute Power Demand Chart -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 class="font-bold text-white text-base">Global AI Power Demand vs Grid Limits</h3>
+                            <p class="text-xs text-slate-400">Projected TeraWatt-Hours (TWh) per year</p>
+                        </div>
+                        <span class="text-xs font-mono text-indigo-400 bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20">35% CAGR</span>
+                    </div>
                     <div class="chart-container"><canvas id="energyChart"></canvas></div>
                 </div>
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold mb-4">Cooling Efficiency (PUE)</h3>
-                    <div class="flex justify-around py-10">
-                        <div class="text-center">
-                            <p class="text-xs font-bold text-slate-400 mb-4 uppercase">Terrestrial (Fans/AC)</p>
-                            <div class="relative w-32 h-32 mx-auto"><canvas id="pueEarth"></canvas><div class="absolute inset-0 flex items-center justify-center font-bold text-slate-700">1.58</div></div>
+
+                <!-- PUE Breakdown Doughnuts -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 class="font-bold text-white text-base">Power Usage Effectiveness (PUE) Breakdown</h3>
+                            <p class="text-xs text-slate-400">Energy required per 1.00 Unit of pure computing</p>
                         </div>
-                        <div class="text-center">
-                            <p class="text-xs font-bold text-slate-400 mb-4 uppercase">Orbital (Radiative)</p>
-                            <div class="relative w-32 h-32 mx-auto"><canvas id="pueSpace"></canvas><div class="absolute inset-0 flex items-center justify-center font-bold text-emerald-600">1.05</div></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 py-4">
+                        <div class="text-center p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Terrestrial (Fans/AC)</span>
+                            <div class="relative w-28 h-28 mx-auto">
+                                <canvas id="pueEarth"></canvas>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span class="font-extrabold text-xl text-rose-400">1.55</span>
+                                    <span class="text-[9px] text-slate-400">PUE</span>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-3">35% power wasted on mechanical chillers & water pumps</p>
+                        </div>
+
+                        <div class="text-center p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Orbital (Radiative)</span>
+                            <div class="relative w-28 h-28 mx-auto">
+                                <canvas id="pueSpace"></canvas>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span class="font-extrabold text-xl text-emerald-400">1.05</span>
+                                    <span class="text-[9px] text-slate-400">PUE</span>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-3">5% power for micro-pumps & active loop valves; 0 water</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- SECTION 3: Orbital Mechanics -->
-        <div id="orbital" class="tab-content">
-            <h2 class="text-2xl font-bold mb-8">Orbital Dynamics Simulator</h2>
+            <!-- Stefan Boltzmann Radiative Physics Deep Dive & Interactive Sizing -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <div class="lg:col-span-4 space-y-4">
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <div class="space-y-6">
-                            <div>
-                                <label class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-2"><span>Target Altitude</span><span id="altLabel" class="text-indigo-600">500 km</span></label>
-                                <input type="range" id="altSlider" min="300" max="36000" step="100" value="500" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
-                            </div>
-                            <div class="pt-4 border-t border-slate-100">
-                                <label class="flex items-center cursor-pointer">
-                                    <div class="relative">
-                                        <input type="checkbox" id="ssoToggle" class="sr-only" onchange="toggleSSO()">
-                                        <div class="block bg-slate-200 w-10 h-6 rounded-full"></div>
-                                        <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full"></div>
-                                    </div>
-                                    <div class="ml-3 text-slate-700 font-bold text-sm">SSO (Terminator Mode)</div>
-                                </label>
-                                <p class="text-[10px] text-slate-400 mt-2 italic">Dawn-Dusk synchronization for 24/7 solar uptime.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-slate-900 p-6 rounded-xl text-white space-y-4">
-                        <div class="flex justify-between text-sm"><span class="text-slate-400">Signal Latency:</span><span id="latVal" class="font-bold text-indigo-400">3.3 ms</span></div>
-                        <div class="flex justify-between text-sm"><span class="text-slate-400">Solar Uptime:</span><span id="sunVal" class="font-bold text-emerald-400">66%</span></div>
-                    </div>
-                </div>
-                <div class="lg:col-span-8 bg-slate-900 rounded-2xl relative flex items-center justify-center h-[500px] overflow-hidden border border-slate-800" id="stage">
-                    <div id="earth" class="relative w-48 h-48 bg-blue-600 rounded-full shadow-[0_0_100px_rgba(59,130,246,0.3)] z-10 overflow-hidden">
-                        <div class="terminator" id="term"></div>
-                    </div>
-                    <div id="path" class="absolute border border-slate-700 border-dashed rounded-full z-0 transition-all duration-500"></div>
-                    <div id="sat" class="absolute z-20 transition-all duration-500"><i class="ph ph-solar-panel text-yellow-400 text-4xl"></i></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION 4: Strategic Landscape -->
-        <div id="players" class="tab-content">
-            <h2 class="text-2xl font-bold mb-8">The Space Cloud Race</h2>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-                <!-- Enabler Layer -->
-                <div class="lg:col-span-1">
-                    <h3 class="text-sm font-bold text-slate-400 uppercase mb-4 tracking-widest">The Enabler Layer</h3>
-                    <div class="gradient-border p-6 rounded-xl shadow-lg space-y-4">
-                        <div class="flex items-center">
-                            <i class="ph ph-rocket-launch text-pink-600 text-3xl mr-3"></i>
-                            <h4 class="font-bold text-xl">SpaceX (Starlink)</h4>
-                        </div>
-                        <p class="text-sm text-slate-600">The vertical stack of compute: Launch (Starship) + Network (Laser Links) + Platform (Starshield). SpaceX owns the only infrastructure capable of massive orbital server deployment.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">LIFELINE</span>
-                            <span class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold">EDGE-AI</span>
-                        </div>
-                    </div>
-                </div>
                 
-                <!-- Client Layer -->
-                <div class="lg:col-span-2">
-                    <h3 class="text-sm font-bold text-slate-400 uppercase mb-4 tracking-widest">Market Specialists</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-white p-6 rounded-xl border border-slate-200">
-                            <h4 class="font-bold mb-2">EU Project ASCEND</h4>
-                            <p class="text-xs text-slate-500">Studying 200MW clusters to bypass European energy grid constraints. Aiming for sovereign green cloud clusters.</p>
+                <!-- Stefan-Boltzmann Chart -->
+                <div class="lg:col-span-7 glass-card p-6 rounded-3xl border border-slate-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 class="font-bold text-white text-base">Stefan-Boltzmann Thermal Radiance</h3>
+                            <p class="text-xs text-slate-400">Heat radiated $q = \epsilon \sigma (T_{rad}^4 - T_{space}^4)$ in Watts per m²</p>
                         </div>
-                        <div class="bg-white p-6 rounded-xl border border-slate-200">
-                            <h4 class="font-bold mb-2">Lonestar Data</h4>
-                            <p class="text-xs text-slate-500">Disaster recovery in Lunar lava tubes. The "Global Reset" backup for human data civilization.</p>
+                        <span class="text-xs font-mono text-purple-400 bg-purple-500/10 px-2 py-1 rounded border border-purple-500/20">$T^4$ Scaling</span>
+                    </div>
+                    <div class="chart-container"><canvas id="radiatorChart"></canvas></div>
+                </div>
+
+                <!-- Interactive Cluster Sizing Calculator -->
+                <div class="lg:col-span-5 glass-card p-6 rounded-3xl border border-slate-800 space-y-6">
+                    <div>
+                        <h3 class="font-bold text-white text-base flex items-center gap-2">
+                            <i class="ph ph-calculator text-indigo-400"></i> Orbital Cluster Sizing Calculator
+                        </h3>
+                        <p class="text-xs text-slate-400">Calculate radiator area & solar array mass for your AI cluster</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-slate-400">Compute Cluster Power:</span>
+                                <span id="calcPowerLabel" class="text-indigo-400 font-bold">10 MW</span>
+                            </div>
+                            <input type="range" id="calcPowerSlider" min="1" max="100" step="1" value="10" class="w-full h-2 bg-slate-800 rounded-lg cursor-pointer">
                         </div>
-                        <div class="bg-white p-6 rounded-xl border border-slate-200">
-                            <h4 class="font-bold mb-2">Microsoft Azure Space</h4>
-                            <p class="text-xs text-slate-500">Edge compute for real-time Earth Observation processing. Shrinking the data from petabytes to kilobytes in-situ.</p>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-slate-400">Radiator Operating Temp:</span>
+                                <span id="calcTempLabel" class="text-purple-400 font-bold">70 °C (343 K)</span>
+                            </div>
+                            <input type="range" id="calcTempSlider" min="30" max="110" step="5" value="70" class="w-full h-2 bg-slate-800 rounded-lg cursor-pointer">
                         </div>
-                        <div class="bg-white p-6 rounded-xl border border-slate-200">
-                            <h4 class="font-bold mb-2">xAI / Colossus</h4>
-                            <p class="text-xs text-slate-500">Potential client for space-training. Moving the massive AI heat load off-planet to scale intelligence indefinitely.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-mono">
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-slate-400 text-[10px] uppercase block">Radiator Area Req.</span>
+                            <span id="resRadiatorArea" class="text-lg font-bold text-white">13,050 m²</span>
+                            <span class="text-[10px] text-slate-500 block">Double-sided wings</span>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-slate-400 text-[10px] uppercase block">Solar Array Area</span>
+                            <span id="resSolarArea" class="text-lg font-bold text-indigo-400">22,300 m²</span>
+                            <span class="text-[10px] text-slate-500 block">33% III-V GaInP cells</span>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-slate-400 text-[10px] uppercase block">Water Saved / Year</span>
+                            <span id="resWaterSaved" class="text-lg font-bold text-emerald-400">73.0 M Gal</span>
+                            <span class="text-[10px] text-slate-500 block">vs evaporative cooling</span>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-slate-400 text-[10px] uppercase block">Launches (Starship)</span>
+                            <span id="resStarshipFlights" class="text-lg font-bold text-pink-400">3–4 Flights</span>
+                            <span class="text-[10px] text-slate-500 block">@ 120T net payload</span>
                         </div>
                     </div>
                 </div>
+
             </div>
-            
-            <div class="bg-slate-50 p-8 rounded-2xl border border-slate-200">
-                <h3 class="font-bold mb-6 flex items-center"><i class="ph ph-chart-pie-slice mr-2 text-indigo-600"></i> The "Starship Effect" on Strategy</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="text-center p-4">
-                        <span class="block text-3xl font-bold text-indigo-600 mb-2">100T</span>
-                        <p class="text-xs font-bold text-slate-800 mb-1">Payload to LEO</p>
-                        <p class="text-[10px] text-slate-500">Allows for heavy lead/water radiation shielding and full-sized server racks.</p>
-                    </div>
-                    <div class="text-center p-4">
-                        <span class="block text-3xl font-bold text-indigo-600 mb-2">$20M</span>
-                        <p class="text-xs font-bold text-slate-800 mb-1">Internal Launch Cost</p>
-                        <p class="text-[10px] text-slate-500">Makes the capital expenditure of space lower than terrestrial land acquisition.</p>
-                    </div>
-                    <div class="text-center p-4">
-                        <span class="block text-3xl font-bold text-indigo-600 mb-2">Daily</span>
-                        <p class="text-xs font-bold text-slate-800 mb-1">Flight Cadence</p>
-                        <p class="text-[10px] text-slate-500">Enables rapid hardware replacement Cycles (Moore's Law integration).</p>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
-        <!-- SECTION 5: Economics -->
-        <div id="economics" class="tab-content">
-            <h2 class="text-2xl font-bold mb-8">Economic Viability</h2>
+        <!-- ========================================================================= -->
+        <!-- SECTION 4: ORBITAL MECHANICS SIMULATOR -->
+        <!-- ========================================================================= -->
+        <div id="orbital" class="tab-content space-y-8">
+            
+            <div>
+                <h2 class="text-3xl font-extrabold text-white flex items-center gap-2">
+                    <i class="ph ph-planet text-indigo-400"></i> Orbital Dynamics & Constellation Simulator
+                </h2>
+                <p class="text-slate-400 text-sm mt-1">Simulate orbital altitude, Sun-Synchronous dawn-dusk terminator alignment, speed-of-light latencies, and laser cross-links</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Controls Column -->
+                <div class="lg:col-span-4 space-y-6">
+                    
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-6">
+                        <div>
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">Orbit Controls</h3>
+                            
+                            <!-- Presets -->
+                            <div class="grid grid-cols-2 gap-2 mb-4">
+                                <button onclick="setOrbitPreset(550, true)" class="px-2.5 py-1.5 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-medium hover:bg-indigo-500/30 text-left">
+                                    <span class="font-bold block">LEO SSO</span> 550 km (Dawn-Dusk)
+                                </button>
+                                <button onclick="setOrbitPreset(550, false)" class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 text-xs font-medium hover:bg-slate-700 text-left">
+                                    <span class="font-bold block">Starlink Shell</span> 550 km (Std)
+                                </button>
+                                <button onclick="setOrbitPreset(10000, false)" class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 text-xs font-medium hover:bg-slate-700 text-left">
+                                    <span class="font-bold block">MEO</span> 10,000 km
+                                </button>
+                                <button onclick="setOrbitPreset(35786, false)" class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 text-xs font-medium hover:bg-slate-700 text-left">
+                                    <span class="font-bold block">GEO</span> 35,786 km
+                                </button>
+                            </div>
+
+                            <div>
+                                <label class="flex justify-between text-xs font-mono text-slate-400 mb-2">
+                                    <span>Target Orbital Altitude</span>
+                                    <span id="altLabel" class="text-indigo-400 font-bold">550 km</span>
+                                </label>
+                                <input type="range" id="altSlider" min="300" max="36000" step="50" value="550" class="w-full h-2 bg-slate-800 rounded-lg cursor-pointer">
+                            </div>
+                        </div>
+
+                        <!-- Toggles -->
+                        <div class="space-y-3 pt-4 border-t border-slate-800">
+                            
+                            <!-- SSO Toggle -->
+                            <label class="flex items-center justify-between cursor-pointer p-2 rounded-xl hover:bg-slate-800/40">
+                                <div>
+                                    <span class="text-sm font-bold text-white block">Sun-Synchronous (SSO)</span>
+                                    <span class="text-[11px] text-slate-400">Dawn-Dusk 98° inclination for 100% continuous solar uptime</span>
+                                </div>
+                                <input type="checkbox" id="ssoToggle" class="sr-only" onchange="toggleSSO()" checked>
+                                <div class="w-11 h-6 bg-slate-700 rounded-full relative transition-colors" id="ssoTrack">
+                                    <div class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform" id="ssoThumb"></div>
+                                </div>
+                            </label>
+
+                            <!-- Laser ISL Toggle -->
+                            <label class="flex items-center justify-between cursor-pointer p-2 rounded-xl hover:bg-slate-800/40">
+                                <div>
+                                    <span class="text-sm font-bold text-white block">Optical Inter-Satellite Links (ISL)</span>
+                                    <span class="text-[11px] text-slate-400">Laser cross-links connect orbital compute nodes</span>
+                                </div>
+                                <input type="checkbox" id="islToggle" class="sr-only" onchange="toggleISL()" checked>
+                                <div class="w-11 h-6 bg-slate-700 rounded-full relative transition-colors" id="islTrack">
+                                    <div class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform" id="islThumb"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Live Telemetry Card -->
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-3 font-mono text-xs">
+                        <h4 class="text-slate-400 uppercase tracking-wider font-bold text-[10px]">Live Orbital Telemetry</h4>
+                        <div class="flex justify-between py-1 border-b border-slate-800/60">
+                            <span class="text-slate-400">Speed of Light Latency (One-Way):</span>
+                            <span id="latVal" class="font-bold text-cyan-400">1.8 ms</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-800/60">
+                            <span class="text-slate-400">Round Trip Time (RTT):</span>
+                            <span id="rttVal" class="font-bold text-cyan-400">3.7 ms</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-800/60">
+                            <span class="text-slate-400">Orbital Velocity:</span>
+                            <span id="velVal" class="font-bold text-indigo-400">7.59 km/s</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-800/60">
+                            <span class="text-slate-400">Orbital Period:</span>
+                            <span id="periodVal" class="font-bold text-purple-400">95.6 min</span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="text-slate-400">Solar Uptime Fraction:</span>
+                            <span id="sunVal" class="font-bold text-emerald-400">100% (Continuous)</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Simulation Canvas Stage -->
+                <div class="lg:col-span-8 glass-card rounded-3xl relative flex items-center justify-center min-h-[500px] overflow-hidden border border-slate-800 sso-active isl-active" id="stage">
+                    
+                    <!-- Space Background Stars and Grid -->
+                    <div class="absolute inset-0 bg-radial from-slate-900 via-[#070a13] to-[#04060b]"></div>
+                    <div class="absolute top-4 left-4 text-xs font-mono text-slate-500 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 flex items-center gap-2 z-30">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span id="simStatus">SSO Dawn-Dusk Mode &bull; Zero Battery Cycling</span>
+                    </div>
+
+                    <!-- Earth -->
+                    <div id="earth" class="relative w-44 h-44 rounded-full shadow-[0_0_80px_rgba(59,130,246,0.35)] z-10 overflow-hidden bg-gradient-to-tr from-blue-700 via-indigo-600 to-cyan-500 flex items-center justify-center">
+                        <div class="terminator" id="term"></div>
+                        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                        <span class="text-white/60 text-[10px] font-mono tracking-widest uppercase z-20">EARTH</span>
+                    </div>
+
+                    <!-- Orbital Track Paths -->
+                    <div id="path" class="absolute border border-indigo-500/30 border-dashed rounded-full z-0 transition-all duration-300"></div>
+
+                    <!-- Primary Orbital Data Center Node -->
+                    <div id="sat" class="absolute z-20 transition-all duration-300 cursor-pointer group">
+                        <div class="relative flex items-center justify-center">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/50 group-hover:scale-125 transition-transform">
+                                <i class="ph ph-cpu text-white text-lg"></i>
+                            </div>
+                            <span class="absolute -top-7 px-2 py-0.5 rounded bg-slate-900/90 text-indigo-300 text-[10px] font-mono border border-indigo-500/40 whitespace-nowrap shadow">
+                                Node-01 (10MW)
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Satellite Node for Laser Link demonstration -->
+                    <div id="sat2" class="absolute z-20 transition-all duration-300">
+                        <div class="relative flex items-center justify-center">
+                            <div class="w-8 h-8 rounded-lg bg-cyan-600/80 flex items-center justify-center shadow-md shadow-cyan-500/30">
+                                <i class="ph ph-satellite text-white text-sm"></i>
+                            </div>
+                            <span class="absolute -bottom-6 px-1.5 py-0.5 rounded bg-slate-900/90 text-cyan-300 text-[9px] font-mono border border-cyan-500/30 whitespace-nowrap">
+                                Kepler Relay-4
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Laser Link Visualizer -->
+                    <div id="laserBeam" class="laser-beam z-10 h-0.5 pointer-events-none"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- SECTION 5: PLAYERS & ECOSYSTEM -->
+        <!-- ========================================================================= -->
+        <div id="players" class="tab-content space-y-12">
+            
+            <div>
+                <h2 class="text-3xl font-extrabold text-white flex items-center gap-2">
+                    <i class="ph ph-users-three text-indigo-400"></i> The Orbital Cloud Strategic Landscape
+                </h2>
+                <p class="text-slate-400 text-sm mt-1">From heavy-lift launch enablers to specialized space cloud hyperscalers and radiation-tolerant silicon</p>
+            </div>
+
+            <!-- Layer 1: Launch & Heavy-Lift Enablers -->
+            <div class="space-y-4">
+                <div class="flex items-center space-x-2">
+                    <span class="px-2.5 py-1 rounded bg-pink-500/20 text-pink-300 text-xs font-mono font-bold">LAYER 1</span>
+                    <h3 class="text-xl font-bold text-white">Heavy-Lift Launch & Infrastructure Enablers</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 rounded-2xl bg-pink-500/20 text-pink-400 flex items-center justify-center text-2xl">
+                                    <i class="ph ph-rocket"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white">SpaceX (Starship & Starlink)</h4>
+                                    <p class="text-xs text-slate-400">Vertically integrated launch + orbital laser constellation</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">Dominant Layer</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            SpaceX operates the complete vertical stack: Starship Block 2/3 (100T-150T payload capacity to LEO), Starlink's global Free-Space Optical (FSO) laser backbone, and Starshield defense infrastructure. Starship's high payload envelope enables full-size data center racks and thick shielding without micro-miniaturization penalties.
+                        </p>
+                        <div class="grid grid-cols-3 gap-2 pt-2 text-center text-xs font-mono">
+                            <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
+                                <span class="text-slate-400 text-[10px] block">Payload/Flight</span>
+                                <span class="font-bold text-white">100–150T</span>
+                            </div>
+                            <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
+                                <span class="text-slate-400 text-[10px] block">Target Cost/kg</span>
+                                <span class="font-bold text-pink-400">&lt; $200</span>
+                            </div>
+                            <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
+                                <span class="text-slate-400 text-[10px] block">Laser Mesh</span>
+                                <span class="font-bold text-cyan-400">10,000+ Sats</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl">
+                                    <i class="ph ph-globe-hemisphere-west"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white">Blue Origin (New Glenn)</h4>
+                                    <p class="text-xs text-slate-400">Heavy lift 45T payload with 7-meter fairing capacity</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">Alternative Heavy</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            New Glenn provides commercial multi-megawatt cluster deployment capabilities with its massive 7-meter payload fairing, giving commercial space data operators redundancy against single-provider launch bottlenecks.
+                        </p>
+                        <div class="grid grid-cols-3 gap-2 pt-2 text-center text-xs font-mono">
+                            <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
+                                <span class="text-slate-400 text-[10px] block">Fairing Diameter</span>
+                                <span class="font-bold text-white">7.0 Meters</span>
+                            </div>
+                            <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
+                                <span class="text-slate-400 text-[10px] block">Payload to LEO</span>
+                                <span class="font-bold text-blue-400">45 Tons</span>
+                            </div>
+                            <div class="p-2 rounded-xl bg-slate-900/60 border border-slate-800">
+                                <span class="text-slate-400 text-[10px] block">Booster Reuse</span>
+                                <span class="font-bold text-emerald-400">25+ Flights</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Layer 2: Dedicated Space AI Hyperscalers -->
+            <div class="space-y-4">
+                <div class="flex items-center space-x-2">
+                    <span class="px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-300 text-xs font-mono font-bold">LAYER 2</span>
+                    <h3 class="text-xl font-bold text-white">Orbital Cloud Operators & AI Constellations</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    <!-- Starcloud -->
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl">
+                                <i class="ph ph-sparkle"></i>
+                            </div>
+                            <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono text-[10px]">$2.3B Val</span>
+                        </div>
+                        <h4 class="font-bold text-white text-base">Starcloud (Lumen Orbit)</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Pioneered in-orbit GPU compute with Starcloud-1 (H100 NanoGPT training, Nov 2025). Building commercial constellation for AI training and inference with NVIDIA Space-1 Vera Rubin modules.
+                        </p>
+                        <div class="pt-2 border-t border-slate-800/80 text-[11px] text-slate-300 space-y-1">
+                            <div><strong>Funding:</strong> $450M (NVIDIA, Cisco, Benchmark)</div>
+                            <div><strong>Next Launch:</strong> Starcloud-2 Cluster (Q4 2026)</div>
+                        </div>
+                    </div>
+
+                    <!-- SpaceX Project Starmind -->
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div class="w-10 h-10 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center text-xl">
+                                <i class="ph ph-brain"></i>
+                            </div>
+                            <span class="px-2 py-0.5 rounded bg-pink-500/20 text-pink-300 font-mono text-[10px]">Announced 2026</span>
+                        </div>
+                        <h4 class="font-bold text-white text-base">SpaceX Project Starmind</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            SpaceX's AI1 mega-constellation featuring NVIDIA Vera Rubin NVL72 compute and 70m deployable liquid radiators. Fabricated at Bastrop Gigasat factory to power Grok models.
+                        </p>
+                        <div class="pt-2 border-t border-slate-800/80 text-[11px] text-slate-300 space-y-1">
+                            <div><strong>Node Size:</strong> 20m height / 70m wingspan</div>
+                            <div><strong>First Deployment:</strong> Q4 2027 (Starship)</div>
+                        </div>
+                    </div>
+
+                    <!-- Google Project Suncatcher -->
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl">
+                                <i class="ph ph-google-logo"></i>
+                            </div>
+                            <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono text-[10px]">Moonshot</span>
+                        </div>
+                        <h4 class="font-bold text-white text-base">Google Project Suncatcher</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Google Research architecture deploying modular solar satellite fleets equipped with custom TPU Trillium (v6e) processors linked by high-throughput free-space optical laser bridges.
+                        </p>
+                        <div class="pt-2 border-t border-slate-800/80 text-[11px] text-slate-300 space-y-1">
+                            <div><strong>Silicon:</strong> Google TPU Trillium v6e</div>
+                            <div><strong>Test Mission:</strong> 2 Sats with Planet Labs (2027)</div>
+                        </div>
+                    </div>
+
+                    <!-- EU Project ASCEND -->
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl">
+                                <i class="ph ph-shield-star"></i>
+                            </div>
+                            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px]">EU Sovereign</span>
+                        </div>
+                        <h4 class="font-bold text-white text-base">EU Project ASCEND</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            European Commission initiative led by Thales Alenia Space. Validated 200MW space clusters to bypass EU grid saturation, eliminate carbon footprint, and secure European digital sovereignty.
+                        </p>
+                        <div class="pt-2 border-t border-slate-800/80 text-[11px] text-slate-300 space-y-1">
+                            <div><strong>Cluster Size:</strong> 200 Megawatts baseline</div>
+                            <div><strong>Target Launcher:</strong> Ariane Next / Eco-heavy</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Layer 3: Silicon, Relay & Extreme Storage -->
+            <div class="space-y-4">
+                <div class="flex items-center space-x-2">
+                    <span class="px-2.5 py-1 rounded bg-purple-500/20 text-purple-300 text-xs font-mono font-bold">LAYER 3</span>
+                    <h3 class="text-xl font-bold text-white">Silicon, Optical Relay & Specialized Nodes</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <i class="ph ph-microchip text-purple-400 text-2xl"></i>
+                            <h4 class="font-bold text-white text-base">NVIDIA Space Architecture</h4>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Developed the <strong>Space-1 Vera Rubin module</strong> and <strong>Vera CPU</strong> with hardware-level Triple Modular Redundancy (TMR) to mitigate cosmic ray bit-flips without heavy lead penalties.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <i class="ph ph-broadcast text-cyan-400 text-2xl"></i>
+                            <h4 class="font-bold text-white text-base">Kepler Communications</h4>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Provides commercial low-latency optical data relay networks (Aether mesh), enabling multi-gigabit orbital cross-links and direct downlinks to ground stations.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <i class="ph ph-moon text-amber-400 text-2xl"></i>
+                            <h4 class="font-bold text-white text-base">Lonestar Data Holdings</h4>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Deploying ultra-secure archival data centers in Lunar lava tubes, creating an off-planet immutable disaster recovery and civilization backup layer.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- SECTION 6: ECONOMICS & TCO -->
+        <!-- ========================================================================= -->
+        <div id="economics" class="tab-content space-y-12">
+            
+            <div>
+                <h2 class="text-3xl font-extrabold text-white flex items-center gap-2">
+                    <i class="ph ph-chart-line-up text-indigo-400"></i> Economics & 10-Year TCO Analysis
+                </h2>
+                <p class="text-slate-400 text-sm mt-1">Modeling launch cost disruption, capital expenditures vs operating expenditures, and time-to-market advantages</p>
+            </div>
+
+            <!-- Charts Row -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold mb-4">Launch Cost Disruption (Log Scale)</h3>
+                
+                <!-- Launch Cost Disruption Curve -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 class="font-bold text-white text-base">Launch Cost Disruption ($/kg to LEO)</h3>
+                            <p class="text-xs text-slate-400">Logarithmic scale from Space Shuttle to Starship</p>
+                        </div>
+                        <span class="text-xs font-mono text-pink-400 bg-pink-500/10 px-2 py-1 rounded border border-pink-500/20">99.6% Reduction</span>
+                    </div>
                     <div class="chart-container"><canvas id="launchChart"></canvas></div>
                 </div>
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold mb-4">Cumulative 10-Year TCO Analysis</h3>
+
+                <!-- 10-Year TCO Cumulative Model -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 class="font-bold text-white text-base">10-Year Cumulative TCO ($M / 100MW Cluster)</h3>
+                            <p class="text-xs text-slate-400">High CapEx/Zero OpEx (Space) vs Low CapEx/Massive OpEx (Earth)</p>
+                        </div>
+                        <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">Cross-Over: Yr 4.5</span>
+                    </div>
                     <div class="chart-container"><canvas id="tcoChart"></canvas></div>
                 </div>
+
             </div>
+
+            <!-- Economic Drivers Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl">
+                        <i class="ph ph-lightning"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-base">Zero Electricity & Water OpEx</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        A terrestrial 100MW cluster spends ~$105M/year in commercial electricity (@ $0.12/kWh) and $12M in water treatment/HVAC maintenance. In Sun-Synchronous orbit, fuel and water operating costs are effectively $0.
+                    </p>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl">
+                        <i class="ph ph-hourglass-high"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-base">Eliminating the 5-Year Interconnect Queue</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        The opportunity cost of delayed revenue in AI is massive. Terrestrial operators lose 3-5 years waiting for utility substation transformer deliveries, while orbital constellations scale as fast as launch vehicle manifests allow.
+                    </p>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center text-xl">
+                        <i class="ph ph-arrows-clockwise"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-base">3-Year Moore's Law Lifecycle Match</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Rather than designing satellites for 15-year lifespans, orbital AI clusters are built for 3-5 year lifecycles. When GPUs become obsolete, satellites naturally deorbit and are replaced by the next generation of silicon at lower launch costs.
+                    </p>
+                </div>
+
+            </div>
+
         </div>
 
-        <!-- SECTION 6: Challenges -->
-        <div id="challenges" class="tab-content">
-            <h2 class="text-2xl font-bold mb-8">The Harsh Realities of Orbit</h2>
+        <!-- ========================================================================= -->
+        <!-- SECTION 7: ENGINEERING CHALLENGES -->
+        <!-- ========================================================================= -->
+        <div id="challenges" class="tab-content space-y-12">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <!-- Radiation -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="ph ph-warning-circle text-orange-600 text-2xl"></i>
-                    </div>
-                    <h3 class="font-bold text-lg mb-2">Radiation & Bit Flips</h3>
-                    <p class="text-sm text-slate-600">Standard terrestrial GPUs suffer rapid degradation and data corruption (Single Event Upsets) from cosmic rays. Mitigation requires heavy lead shielding or vastly more expensive, lower-performance radiation-hardened chips.</p>
-                </div>
-                
-                <!-- Bandwidth -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="ph ph-wifi-slash text-blue-600 text-2xl"></i>
-                    </div>
-                    <h3 class="font-bold text-lg mb-2">The Bandwidth Bottleneck</h3>
-                    <p class="text-sm text-slate-600">While latency is low, uploading petabytes of AI training data to orbit via RF or optical laser links is a massive constraint compared to the massive throughput of terrestrial fiber-optic networks.</p>
-                </div>
-                
-                <!-- Maintenance -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="ph ph-wrench text-red-600 text-2xl"></i>
-                    </div>
-                    <h3 class="font-bold text-lg mb-2">Zero-Maintenance Lifespan</h3>
-                    <p class="text-sm text-slate-600">Terrestrial servers are easily swapped when they fail. In orbit, a failed GPU is dead weight. Systems must be engineered for extreme durability, or rely on costly, frequent replacement launches.</p>
-                </div>
-                
-                <!-- Radiators -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="ph ph-thermometer text-indigo-600 text-2xl"></i>
-                    </div>
-                    <h3 class="font-bold text-lg mb-2">The Radiator Problem</h3>
-                    <p class="text-sm text-slate-600">Space is a vacuum, meaning no convection cooling. Rejecting megawatts of heat from AI clusters requires massive, heavy radiator wings, drastically increasing the physical footprint and launch mass.</p>
-                </div>
-                
-                <!-- Debris -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2 lg:col-span-1">
-                    <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="ph ph-meteor text-slate-600 text-2xl"></i>
-                    </div>
-                    <h3 class="font-bold text-lg mb-2">Orbital Debris</h3>
-                    <p class="text-sm text-slate-600">Placing massive, delicate server farms in Low Earth Orbit turns them into large targets for micro-meteoroids and space junk, increasing the risk of catastrophic physical damage.</p>
-                </div>
+            <div>
+                <h2 class="text-3xl font-extrabold text-white flex items-center gap-2">
+                    <i class="ph ph-warning-diamond text-indigo-400"></i> The Harsh Realities of Orbit & 2026 Solutions
+                </h2>
+                <p class="text-slate-400 text-sm mt-1">Deep technical breakdown of orbital hazards, thermodynamic limits, and aerospace mitigation strategies</p>
             </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Challenge 1: Radiation -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">
+                        <i class="ph ph-radioactive"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-lg">1. Radiation & Single Event Upsets</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        <strong>The Hazard:</strong> High-energy protons and galactic cosmic rays strike sub-3nm silicon transistors, flipping bits in SRAM/HBM memory and inducing destructive latch-ups.
+                    </p>
+                    <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300">
+                        <strong class="text-indigo-400 block mb-1">2026 Solution:</strong>
+                        Triple Modular Redundancy (TMR), algorithmic checkpoint-restart protocols, and boronated polymer shielding (used in NVIDIA Space-1 modules).
+                    </div>
+                </div>
+
+                <!-- Challenge 2: Thermal Radiators -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                    <div class="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl">
+                        <i class="ph ph-thermometer-hot"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-lg">2. Thermal Radiator Footprint</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        <strong>The Hazard:</strong> In the vacuum of space, heat cannot be removed by air convection. Megawatts of GPU heat must be radiated purely via infrared radiation ($q \propto T^4$).
+                    </p>
+                    <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300">
+                        <strong class="text-indigo-400 block mb-1">2026 Solution:</strong>
+                        Two-phase liquid loop ammonia heat pipes and ultra-lightweight deployable graphene radiator panels with emissivity $\epsilon > 0.94$ (e.g. SpaceX AI1 70m wings).
+                    </div>
+                </div>
+
+                <!-- Challenge 3: Bandwidth Bottleneck -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                    <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl">
+                        <i class="ph ph-wifi-slash"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-lg">3. The Uplink Bandwidth Bottleneck</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        <strong>The Hazard:</strong> Uploading petabytes of raw AI training datasets via traditional RF satellite frequencies (Ka/Ku band) is painfully slow and congested.
+                    </p>
+                    <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300">
+                        <strong class="text-indigo-400 block mb-1">2026 Solution:</strong>
+                        Free-Space Optical (FSO) laser links (100 Gbps to 1 Tbps) paired with Kepler relay mesh and edge-filtering datasets in-situ before transmission.
+                    </div>
+                </div>
+
+                <!-- Challenge 4: Zero-Maintenance -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl">
+                        <i class="ph ph-wrench"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-lg">4. Zero-Maintenance Lifespan</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        <strong>The Hazard:</strong> If a memory chip or GPU die fails in LEO, a technician cannot walk down the aisle to replace the blade. Dead hardware becomes dead mass.
+                    </p>
+                    <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300">
+                        <strong class="text-indigo-400 block mb-1">2026 Solution:</strong>
+                        Software-defined node fencing (automatically routing around degraded dies) combined with Orbit Fab robotic hydrazine refueling and 3-year refresh constellations.
+                    </div>
+                </div>
+
+                <!-- Challenge 5: Orbital Debris -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-500/20 text-slate-400 flex items-center justify-center text-2xl">
+                        <i class="ph ph-meteor"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-lg">5. Space Debris & Collision Risks</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        <strong>The Hazard:</strong> Large surface area radiator arrays are targets for micro-meteoroids and orbital debris fragments traveling at 8 km/s.
+                    </p>
+                    <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300">
+                        <strong class="text-indigo-400 block mb-1">2026 Solution:</strong>
+                        Automated AI collision-avoidance thruster burns, multi-layered Nextel/Kevlar Whipple shields, and self-sealing radiator loop channels.
+                    </div>
+                </div>
+
+                <!-- Challenge 6: Launch Vibration -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl">
+                        <i class="ph ph-vibrate"></i>
+                    </div>
+                    <h3 class="font-bold text-white text-lg">6. Launch Acoustic & 15G Loads</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        <strong>The Hazard:</strong> Rocket liftoff generates extreme acoustic sound pressure levels (&gt;140 dB) and vibration that can shatter silicon micro-solder balls.
+                    </p>
+                    <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300">
+                        <strong class="text-indigo-400 block mb-1">2026 Solution:</strong>
+                        Elastomeric isolators, underfill potting compounds, and ruggedized chassis packaging qualified for 20G random vibration testing.
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
-        <!-- SECTION 7: Media -->
-        <div id="media" class="tab-content">
-            <h2 class="text-2xl font-bold mb-8">Video Resources & Research</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- ========================================================================= -->
+        <!-- SECTION 8: MEDIA & RESEARCH TALKS -->
+        <!-- ========================================================================= -->
+        <div id="media" class="tab-content space-y-12">
+            
+            <div>
+                <h2 class="text-3xl font-extrabold text-white flex items-center gap-2">
+                    <i class="ph ph-video text-indigo-400"></i> Essential Talks, Interviews & Technical Deep Dives
+                </h2>
+                <p class="text-slate-400 text-sm mt-1">Curated research presentations from founders, aerospace engineers, and industry leaders</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 
-                <!-- Video 1 -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-lg mb-2">Are space GPUs practical? – Elon Musk</h3>
-                    <p class="text-sm text-slate-500 mb-4">Dwarkesh Podcast (Feb 2026). Musk discusses the immense energy constraints of terrestrial AI and the advantages of orbital solar arrays and vacuum cooling.</p>
-                    <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-slate-900 border border-slate-200 group">
-                        <a href="https://www.youtube.com/watch?v=BYXbuik3dgA" target="_blank" class="block w-full h-full relative">
+                <!-- Video 1: Elon Musk / Dwarkesh -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs text-pink-400 font-bold mb-2">
+                            <i class="ph ph-microphone"></i>
+                            <span>DWARKESH PODCAST (2026)</span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg mb-2">Are space GPUs practical? – Elon Musk</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Musk explains the fundamental physics of terrestrial power constraints, the 1,361 W/m² solar constant in LEO, and the rationale behind SpaceX's Project Starmind.
+                        </p>
+                    </div>
+                    <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 group">
+                        <a href="https://www.youtube.com/watch?v=BYXbuik3dgA" target="_blank" rel="noopener" class="block w-full h-full relative">
                             <img src="https://img.youtube.com/vi/BYXbuik3dgA/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/BYXbuik3dgA/hqdefault.jpg'" alt="Video Thumbnail" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300">
                             <div class="absolute inset-0 flex items-center justify-center">
-                                <i class="ph ph-youtube-logo text-6xl text-white opacity-80 group-hover:text-red-500 group-hover:scale-110 transition-all duration-300 shadow-sm"></i>
+                                <div class="w-14 h-14 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                    <i class="ph ph-play-fill text-2xl ml-0.5"></i>
+                                </div>
                             </div>
                         </a>
                     </div>
                 </div>
 
-                <!-- Video 2 -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-lg mb-2">Let's Build AI Data Centers in Space</h3>
-                    <p class="text-sm text-slate-500 mb-4">Philip Johnston (TED). A powerful pitch from the co-founder of Starcloud outlining the economic and physical case for space infrastructure.</p>
-                    <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-slate-900 border border-slate-200 group">
-                        <a href="https://www.youtube.com/watch?v=an6ZM0iCGQw" target="_blank" class="block w-full h-full relative">
+                <!-- Video 2: Philip Johnston / TEDx -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs text-indigo-400 font-bold mb-2">
+                            <i class="ph ph-presentation"></i>
+                            <span>TED TALK &bull; STARCLOUD</span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg mb-2">Let's Build AI Data Centers in Space</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Starcloud CEO Philip Johnston details the thermodynamic and economic breakdown of orbital server clusters and their mission to bypass Earth's power grid.
+                        </p>
+                    </div>
+                    <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 group">
+                        <a href="https://www.youtube.com/watch?v=an6ZM0iCGQw" target="_blank" rel="noopener" class="block w-full h-full relative">
                             <img src="https://img.youtube.com/vi/an6ZM0iCGQw/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/an6ZM0iCGQw/hqdefault.jpg'" alt="Video Thumbnail" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300">
                             <div class="absolute inset-0 flex items-center justify-center">
-                                <i class="ph ph-youtube-logo text-6xl text-white opacity-80 group-hover:text-red-500 group-hover:scale-110 transition-all duration-300 shadow-sm"></i>
+                                <div class="w-14 h-14 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                    <i class="ph ph-play-fill text-2xl ml-0.5"></i>
+                                </div>
                             </div>
                         </a>
                     </div>
                 </div>
 
-                <!-- Video 3 -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-lg mb-2">Why Everyone Is Talking About Data Centers In Space</h3>
-                    <p class="text-sm text-slate-500 mb-4">Scott Manley. An extremely detailed, grounded look at the physical physics of heat rejection (the radiator problem) in a vacuum.</p>
-                    <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-slate-900 border border-slate-200 group">
-                        <a href="https://www.youtube.com/watch?v=DCto6UkBJoI" target="_blank" class="block w-full h-full relative">
+                <!-- Video 3: Scott Manley Physics -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs text-cyan-400 font-bold mb-2">
+                            <i class="ph ph-atom"></i>
+                            <span>AEROSPACE ENGINEERING</span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg mb-2">Why Everyone Is Talking About Data Centers In Space</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Scott Manley breaks down the exact orbital physics of radiative cooling in a vacuum, heat rejection limits, and radiation hardening trade-offs.
+                        </p>
+                    </div>
+                    <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 group">
+                        <a href="https://www.youtube.com/watch?v=DCto6UkBJoI" target="_blank" rel="noopener" class="block w-full h-full relative">
                             <img src="https://img.youtube.com/vi/DCto6UkBJoI/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/DCto6UkBJoI/hqdefault.jpg'" alt="Video Thumbnail" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300">
                             <div class="absolute inset-0 flex items-center justify-center">
-                                <i class="ph ph-youtube-logo text-6xl text-white opacity-80 group-hover:text-red-500 group-hover:scale-110 transition-all duration-300 shadow-sm"></i>
+                                <div class="w-14 h-14 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                    <i class="ph ph-play-fill text-2xl ml-0.5"></i>
+                                </div>
                             </div>
                         </a>
                     </div>
                 </div>
 
-                <!-- Video 4 -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-lg mb-2">Inside The Startup Launching AI Data Centers Into Space</h3>
-                    <p class="text-sm text-slate-500 mb-4">A behind-the-scenes look at the actual logistics and hardware challenges faced by orbital computing startups like Starcloud.</p>
-                    <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-slate-900 border border-slate-200 group">
-                        <a href="https://www.youtube.com/watch?v=hKw6cRKcqzY" target="_blank" class="block w-full h-full relative">
+                <!-- Video 4: CNBC Inside Starcloud -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs text-purple-400 font-bold mb-2">
+                            <i class="ph ph-television"></i>
+                            <span>CNBC / TECH INSIDER</span>
+                        </div>
+                        <h3 class="font-bold text-white text-lg mb-2">Inside The Startup Launching AI Into Space</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            A behind-the-scenes investigative look into the hardware cleanrooms, shaker table testing, and clean thermal vacuum chamber validation at Starcloud.
+                        </p>
+                    </div>
+                    <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 group">
+                        <a href="https://www.youtube.com/watch?v=hKw6cRKcqzY" target="_blank" rel="noopener" class="block w-full h-full relative">
                             <img src="https://img.youtube.com/vi/hKw6cRKcqzY/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/hKw6cRKcqzY/hqdefault.jpg'" alt="Video Thumbnail" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300">
                             <div class="absolute inset-0 flex items-center justify-center">
-                                <i class="ph ph-youtube-logo text-6xl text-white opacity-80 group-hover:text-red-500 group-hover:scale-110 transition-all duration-300 shadow-sm"></i>
+                                <div class="w-14 h-14 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                    <i class="ph ph-play-fill text-2xl ml-0.5"></i>
+                                </div>
                             </div>
                         </a>
+                    </div>
+                </div>
+
+                <!-- Card 5: Research Papers & Publications -->
+                <div class="glass-card p-6 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-4 md:col-span-2 lg:col-span-2">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs text-emerald-400 font-bold mb-2">
+                            <i class="ph ph-article"></i>
+                            <span>RESEARCH REPOSITORY & PAPERS</span>
+                        </div>
+                        <h3 class="font-bold text-white text-xl mb-2">Key Research Papers & Publications</h3>
+                        <div class="space-y-3 mt-4 text-xs">
+                            <div class="p-3 rounded-2xl bg-slate-900/60 border border-slate-800 flex justify-between items-center">
+                                <div>
+                                    <span class="font-bold text-white block">European Commission ASCEND Feasibility Final Report</span>
+                                    <span class="text-slate-400">Thales Alenia Space, ArianeGroup, Carbone 4 (2026)</span>
+                                </div>
+                                <span class="px-2 py-1 rounded bg-slate-800 text-emerald-400 font-mono text-[10px]">EU Horizon</span>
+                            </div>
+                            <div class="p-3 rounded-2xl bg-slate-900/60 border border-slate-800 flex justify-between items-center">
+                                <div>
+                                    <span class="font-bold text-white block">Project Suncatcher: Solar-Powered Orbital ML Clusters</span>
+                                    <span class="text-slate-400">Google Research & Planet Labs Technical Report (2025/2026)</span>
+                                </div>
+                                <span class="px-2 py-1 rounded bg-slate-800 text-blue-400 font-mono text-[10px]">Google ML</span>
+                            </div>
+                            <div class="p-3 rounded-2xl bg-slate-900/60 border border-slate-800 flex justify-between items-center">
+                                <div>
+                                    <span class="font-bold text-white block">High-Density Radiative Cooling in Vacuum for Terawatt Scale AI</span>
+                                    <span class="text-slate-400">AIAA Journal of Spacecraft and Rockets (2026)</span>
+                                </div>
+                                <span class="px-2 py-1 rounded bg-slate-800 text-purple-400 font-mono text-[10px]">AIAA Review</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
             </div>
+
         </div>
 
     </main>
 
-    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-slate-400 text-sm">Strategic Research Document: The Orbital Cloud Opportunity. &copy; 2026 Stratos. | Brought to you by <a href="https://www.algoentropy.com/" target="_blank" class="hover:text-indigo-500 underline transition-colors">AlgoEntropy</a>.</p>
-            <p class="text-slate-300 text-[10px] mt-2 italic">Infrastructure estimates based on Starship Block 2 payload capabilities.</p>
+    <!-- Footer -->
+    <footer class="glass-card border-t border-slate-800/80 py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-pink-500 flex items-center justify-center">
+                        <i class="ph ph-planet text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-white tracking-tight">Project Stratos</span>
+                        <p class="text-xs text-slate-400">Strategic Orbital Cloud & Space AI Research Platform</p>
+                    </div>
+                </div>
+                
+                <div class="text-center md:text-right text-xs text-slate-400 space-y-1">
+                    <p>&copy; 2026 Project Stratos &bull; Brought to you by <a href="https://www.algoentropy.com/" target="_blank" rel="noopener" class="text-indigo-400 hover:text-indigo-300 underline font-medium">AlgoEntropy</a>.</p>
+                    <p class="text-[11px] text-slate-500 font-mono">Telemetry & infrastructure estimates benchmarked on Starship Block 2/3 & NVIDIA Space-1 Vera Rubin architectures.</p>
+                </div>
+            </div>
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script>
         // State
-        const state = { current: 'summary', altitude: 500, sso: false };
+        const state = { 
+            current: 'summary', 
+            altitude: 550, 
+            sso: true,
+            isl: true 
+        };
 
         // Navigation
         function switchTab(id) {
             state.current = id;
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.toggle('active', el.id === id));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('text-indigo-600', btn.dataset.target === id));
+            document.querySelectorAll('.tab-content').forEach(el => {
+                if (el.id === id) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.dataset.target === id) {
+                    btn.classList.add('text-indigo-400', 'bg-indigo-500/10', 'border', 'border-indigo-500/20');
+                    btn.classList.remove('text-slate-400');
+                } else {
+                    btn.classList.remove('text-indigo-400', 'bg-indigo-500/10', 'border', 'border-indigo-500/20');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+
             window.dispatchEvent(new Event('resize'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Sim Logic
-        const slider = document.getElementById('altSlider');
-        function toggleSSO() {
-            state.sso = document.getElementById('ssoToggle').checked;
-            document.getElementById('stage').classList.toggle('sso-active', state.sso);
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('mobileMenuIcon');
+            menu.classList.toggle('hidden');
+            if (menu.classList.contains('hidden')) {
+                icon.classList.remove('ph-x');
+                icon.classList.add('ph-list');
+            } else {
+                icon.classList.remove('ph-list');
+                icon.classList.add('ph-x');
+            }
+        }
+
+        // Timeline Category Filter
+        function filterTimeline(category) {
+            document.querySelectorAll('.timeline-filter-btn').forEach(btn => {
+                if (btn.dataset.category === category) {
+                    btn.classList.add('bg-indigo-600', 'text-white');
+                    btn.classList.remove('bg-slate-800', 'text-slate-300');
+                } else {
+                    btn.classList.remove('bg-indigo-600', 'text-white');
+                    btn.classList.add('bg-slate-800', 'text-slate-300');
+                }
+            });
+
+            document.querySelectorAll('.timeline-item').forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.style.display = 'grid';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Orbit Simulator Logic
+        const altSlider = document.getElementById('altSlider');
+        
+        function setOrbitPreset(alt, isSso) {
+            altSlider.value = alt;
+            const ssoCheckbox = document.getElementById('ssoToggle');
+            ssoCheckbox.checked = isSso;
+            toggleSSO();
             updateSim();
         }
-        function updateSim() {
-            const alt = parseInt(slider.value);
-            document.getElementById('altLabel').innerText = `${alt} km`;
-            document.getElementById('latVal').innerText = `${((alt/300000)*2000).toFixed(1)} ms`;
-            document.getElementById('sunVal').innerText = state.sso ? '100%' : (alt > 35000 ? '99%' : '66%');
-            
-            const scale = 192 + (alt * 0.006);
-            const path = document.getElementById('path');
-            path.style.width = `${scale}px`; path.style.height = `${scale}px`;
-            
-            const radius = scale / 2;
-            const angle = state.sso ? 270 : 0;
-            const x = Math.cos(angle * Math.PI / 180) * radius;
-            const y = Math.sin(angle * Math.PI / 180) * radius;
-            document.getElementById('sat').style.transform = `translate(${x}px, ${y}px) rotate(${angle+90}deg)`;
-        }
-        slider.oninput = updateSim;
 
-        // Charts
+        function toggleSSO() {
+            const checkbox = document.getElementById('ssoToggle');
+            state.sso = checkbox.checked;
+            const stage = document.getElementById('stage');
+            const track = document.getElementById('ssoTrack');
+            const thumb = document.getElementById('ssoThumb');
+            const statusText = document.getElementById('simStatus');
+            
+            if (state.sso) {
+                stage.classList.add('sso-active');
+                track.classList.remove('bg-slate-700');
+                track.classList.add('bg-indigo-600');
+                thumb.classList.add('translate-x-5');
+                statusText.innerText = 'SSO Dawn-Dusk Mode • Zero Battery Cycling';
+            } else {
+                stage.classList.remove('sso-active');
+                track.classList.add('bg-slate-700');
+                track.classList.remove('bg-indigo-600');
+                thumb.classList.remove('translate-x-5');
+                statusText.innerText = 'Standard Equatorial Orbit • ~35% Shadow Eclipse';
+            }
+            updateSim();
+        }
+
+        function toggleISL() {
+            const checkbox = document.getElementById('islToggle');
+            state.isl = checkbox.checked;
+            const stage = document.getElementById('stage');
+            const track = document.getElementById('islTrack');
+            const thumb = document.getElementById('islThumb');
+            
+            if (state.isl) {
+                stage.classList.add('isl-active');
+                track.classList.remove('bg-slate-700');
+                track.classList.add('bg-cyan-600');
+                thumb.classList.add('translate-x-5');
+            } else {
+                stage.classList.remove('isl-active');
+                track.classList.add('bg-slate-700');
+                track.classList.remove('bg-cyan-600');
+                thumb.classList.remove('translate-x-5');
+            }
+            updateSim();
+        }
+
+        function updateSim() {
+            const alt = parseInt(altSlider.value);
+            state.altitude = alt;
+            document.getElementById('altLabel').innerText = `${alt.toLocaleString()} km`;
+            
+            // Physics Calculations
+            const c = 299792; // km/s speed of light
+            const oneWayLat = (alt / c) * 1000;
+            const rtt = oneWayLat * 2;
+            
+            // Orbital velocity v = sqrt(GM / r)
+            const GM = 398600.4418; // km^3/s^2
+            const r = 6371 + alt;
+            const velocity = Math.sqrt(GM / r);
+            const period = (2 * Math.PI * Math.sqrt(Math.pow(r, 3) / GM)) / 60; // in minutes
+            
+            document.getElementById('latVal').innerText = `${oneWayLat.toFixed(1)} ms`;
+            document.getElementById('rttVal').innerText = `${rtt.toFixed(1)} ms`;
+            document.getElementById('velVal').innerText = `${velocity.toFixed(2)} km/s`;
+            document.getElementById('periodVal').innerText = alt > 35000 ? '24.0 hours' : `${period.toFixed(1)} min`;
+            
+            if (state.sso) {
+                document.getElementById('sunVal').innerText = '100% (Continuous)';
+            } else if (alt >= 35786) {
+                document.getElementById('sunVal').innerText = '99.1% (Eclipse Seasons Only)';
+            } else {
+                document.getElementById('sunVal').innerText = '65.2% (34.8% in Umbra)';
+            }
+
+            // Visual Scaling
+            const minScale = 220;
+            const maxScale = 460;
+            const scale = minScale + ((alt - 300) / (36000 - 300)) * (maxScale - minScale);
+            
+            const path = document.getElementById('path');
+            path.style.width = `${scale}px`;
+            path.style.height = `${scale}px`;
+
+            const radius = scale / 2;
+            const angle1 = state.sso ? 270 : 15;
+            const rad1 = (angle1 * Math.PI) / 180;
+            const x1 = Math.cos(rad1) * radius;
+            const y1 = Math.sin(rad1) * radius;
+            
+            const sat = document.getElementById('sat');
+            sat.style.transform = `translate(${x1}px, ${y1}px)`;
+
+            // Second satellite for laser mesh visual
+            const angle2 = state.sso ? 210 : 75;
+            const rad2 = (angle2 * Math.PI) / 180;
+            const x2 = Math.cos(rad2) * radius;
+            const y2 = Math.sin(rad2) * radius;
+            
+            const sat2 = document.getElementById('sat2');
+            sat2.style.transform = `translate(${x2}px, ${y2}px)`;
+
+            // Laser beam alignment
+            const laser = document.getElementById('laserBeam');
+            if (state.isl) {
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const laserAngle = Math.atan2(dy, dx) * (180 / Math.PI);
+                laser.style.width = `${dist}px`;
+                laser.style.transformOrigin = '0 50%';
+                laser.style.transform = `translate(${x1}px, ${y1}px) rotate(${laserAngle}deg)`;
+            }
+        }
+        altSlider.oninput = updateSim;
+
+        // Cluster Sizing Interactive Calculator
+        const calcPower = document.getElementById('calcPowerSlider');
+        const calcTemp = document.getElementById('calcTempSlider');
+
+        function updateClusterCalculator() {
+            const pMW = parseFloat(calcPower.value);
+            const tempC = parseFloat(calcTemp.value);
+            const tempK = tempC + 273.15;
+            
+            document.getElementById('calcPowerLabel').innerText = `${pMW} MW`;
+            document.getElementById('calcTempLabel').innerText = `${tempC} °C (${Math.round(tempK)} K)`;
+
+            // Stefan-Boltzmann q = eps * sigma * (T^4 - Tspace^4)
+            const sigma = 5.670374e-8;
+            const eps = 0.92; // high-emissivity coating
+            const Tspace = 3.0;
+            const fluxWPerM2 = eps * sigma * (Math.pow(tempK, 4) - Math.pow(Tspace, 4));
+            
+            // Double sided radiator area
+            const totalPowerWatts = pMW * 1e6;
+            const requiredAreaM2 = Math.round(totalPowerWatts / (fluxWPerM2 * 2));
+            
+            // Solar array @ 33% efficiency in AM0 (1361 W/m2)
+            const solarFluxEffective = 1361 * 0.33; // ~449 W/m2
+            const solarAreaM2 = Math.round(totalPowerWatts / solarFluxEffective);
+
+            // Water saved: 0.5 gal per kWh typical terrestrial evaporative cooling
+            const annualKWh = pMW * 1000 * 8760;
+            const waterSavedMGal = ((annualKWh * 0.5) / 1e6).toFixed(1);
+
+            // Starship flights @ ~120T net payload per launch
+            // Assume 15 kg / kW for satellite bus + radiator + solar
+            const totalMassTons = (pMW * 1000 * 18) / 1000;
+            const starshipFlights = Math.max(1, Math.ceil(totalMassTons / 120));
+
+            document.getElementById('resRadiatorArea').innerText = `${requiredAreaM2.toLocaleString()} m²`;
+            document.getElementById('resSolarArea').innerText = `${solarAreaM2.toLocaleString()} m²`;
+            document.getElementById('resWaterSaved').innerText = `${waterSavedMGal} M Gal`;
+            document.getElementById('resStarshipFlights').innerText = `${starshipFlights} Flights (${Math.round(totalMassTons)}T)`;
+        }
+        calcPower.oninput = updateClusterCalculator;
+        calcTemp.oninput = updateClusterCalculator;
+
+        // Chart.js Visualizations
         function initCharts() {
-            const opt = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.borderColor = '#1e293b';
+            Chart.defaults.font.family = 'Inter, sans-serif';
+
+            const optCommon = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#cbd5e1', font: { size: 11 } }
+                    }
+                }
+            };
+
+            // 1. Global AI Compute Power Demand vs Grid Capacity
             new Chart(document.getElementById('energyChart'), {
-                type: 'line', data: { labels: ['2020','2025','2030','2035'], datasets: [{ data: [200, 380, 850, 1800], borderColor: '#4f46e5', tension: 0.4 }] }, options: opt
+                type: 'line',
+                data: {
+                    labels: ['2022', '2024', '2026', '2028', '2030', '2032', '2034'],
+                    datasets: [
+                        {
+                            label: 'AI & Data Center Power Demand (TWh/yr)',
+                            data: [340, 460, 680, 1050, 1600, 2400, 3500],
+                            borderColor: '#6366f1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3
+                        },
+                        {
+                            label: 'Terrestrial Grid Available Allocations (TWh/yr)',
+                            data: [500, 580, 690, 800, 920, 1050, 1180],
+                            borderColor: '#ef4444',
+                            borderDash: [6, 6],
+                            tension: 0.2,
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    ...optCommon,
+                    scales: {
+                        y: { title: { display: true, text: 'TWh / Year', color: '#94a3b8' } }
+                    }
+                }
             });
-            const dOpt = { ...opt, cutout: '70%' };
-            new Chart(document.getElementById('pueEarth'), { type: 'doughnut', data: { datasets: [{ data: [1, 0.58], backgroundColor: ['#e2e8f0','#ef4444'] }] }, options: dOpt });
-            new Chart(document.getElementById('pueSpace'), { type: 'doughnut', data: { datasets: [{ data: [1, 0.05], backgroundColor: ['#e2e8f0','#10b981'] }] }, options: dOpt });
+
+            // 2. PUE Breakdown Doughnuts
+            const pueOpt = {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '72%',
+                plugins: { legend: { display: false } }
+            };
+
+            new Chart(document.getElementById('pueEarth'), {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [1.0, 0.55],
+                        backgroundColor: ['#38bdf8', '#f43f5e'],
+                        borderWidth: 0
+                    }]
+                },
+                options: pueOpt
+            });
+
+            new Chart(document.getElementById('pueSpace'), {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [1.0, 0.05],
+                        backgroundColor: ['#38bdf8', '#10b981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: pueOpt
+            });
+
+            // 3. Stefan-Boltzmann Thermal Radiation Curve
+            const tempsC = [30, 40, 50, 60, 70, 80, 90, 100, 110];
+            const heatFlux = tempsC.map(t => {
+                const tk = t + 273.15;
+                return Math.round(0.92 * 5.670374e-8 * Math.pow(tk, 4));
+            });
+
+            new Chart(document.getElementById('radiatorChart'), {
+                type: 'line',
+                data: {
+                    labels: tempsC.map(t => `${t}°C`),
+                    datasets: [{
+                        label: 'Heat Radiated (Watts / m²)',
+                        data: heatFlux,
+                        borderColor: '#a855f7',
+                        backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    ...optCommon,
+                    scales: {
+                        y: { title: { display: true, text: 'Thermal Flux (W / m²)', color: '#94a3b8' } },
+                        x: { title: { display: true, text: 'Radiator Surface Temperature', color: '#94a3b8' } }
+                    }
+                }
+            });
+
+            // 4. Launch Cost Disruption ($/kg log scale)
             new Chart(document.getElementById('launchChart'), {
-                type: 'line', data: { labels: ['Shuttle','F9','Starship'], datasets: [{ data: [54500, 2500, 100], borderColor: '#f43f5e', fill: true, backgroundColor: 'rgba(244,63,94,0.1)' }] }, options: { ...opt, scales: { y: { type: 'logarithmic' } } }
+                type: 'line',
+                data: {
+                    labels: ['Saturn V (1969)', 'Shuttle (1981)', 'Falcon 9 (2015)', 'Falcon Heavy (2018)', 'Starship V1 (2024)', 'Starship V3 (2027+)'],
+                    datasets: [{
+                        label: 'Launch Cost to LEO ($/kg)',
+                        data: [18500, 54500, 2600, 1400, 350, 85],
+                        borderColor: '#ec4899',
+                        backgroundColor: 'rgba(236, 72, 153, 0.15)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#ec4899'
+                    }]
+                },
+                options: {
+                    ...optCommon,
+                    scales: {
+                        y: {
+                            type: 'logarithmic',
+                            title: { display: true, text: 'USD / kg (Log Scale)', color: '#94a3b8' },
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + Number(value).toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
             });
+
+            // 5. 10-Year Cumulative TCO Analysis
             new Chart(document.getElementById('tcoChart'), {
-                type: 'bar', data: { labels: ['Build','Year 4','Year 7','Year 10'], datasets: [
-                    { label: 'Earth (Ops)', data: [50, 400, 800, 1400], backgroundColor: '#ef4444', stack: 'E' },
-                    { label: 'Space (Build)', data: [400, 400, 400, 400], backgroundColor: '#4f46e5', stack: 'S' },
-                    { label: 'Space (Ops)', data: [10, 80, 150, 250], backgroundColor: '#10b981', stack: 'S' }
-                ]}, options: { ...opt, scales: { x: { stacked: true }, y: { stacked: true } } }
+                type: 'line',
+                data: {
+                    labels: ['Year 0', 'Year 2', 'Year 4', 'Year 6', 'Year 8', 'Year 10'],
+                    datasets: [
+                        {
+                            label: 'Terrestrial 100MW TCO (CapEx + High Power/Water OpEx)',
+                            data: [380, 610, 840, 1070, 1300, 1530],
+                            borderColor: '#ef4444',
+                            borderWidth: 3,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'Orbital 100MW TCO (Launch + Zero Electricity OpEx + Refresh)',
+                            data: [650, 690, 780, 920, 1020, 1140],
+                            borderColor: '#10b981',
+                            borderWidth: 3,
+                            tension: 0.2
+                        }
+                    ]
+                },
+                options: {
+                    ...optCommon,
+                    scales: {
+                        y: { title: { display: true, text: 'Cumulative Cost ($ Millions USD)', color: '#94a3b8' } }
+                    }
+                }
             });
         }
-        window.onload = () => { initCharts(); updateSim(); };
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            toggleSSO();
+            toggleISL();
+            updateSim();
+            updateClusterCalculator();
+        });
     </script>
 </body>
 </html>
+
