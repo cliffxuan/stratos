@@ -12,15 +12,44 @@ import { EconomicsTab } from './components/EconomicsTab';
 import { ChallengesTab } from './components/ChallengesTab';
 import { MediaTab } from './components/MediaTab';
 import { Footer } from './components/Footer';
+import { parseTabFromUrl, navigateToTab, TAB_TITLES } from './utils/routing';
 
 export const App: React.FC = () => {
-  const [currentTab, setCurrentTab] = useState<TabId>('summary');
+  const [currentTab, setCurrentTab] = useState<TabId>(() => parseTabFromUrl());
   const [telemetry, setTelemetry] = useState<TelemetryData | null>(null);
   const [satellites, setSatellites] = useState<SatelliteNode[]>([]);
   const [crosslinks, setCrosslinks] = useState<LaserCrosslink[]>([]);
   const [timeline, setTimeline] = useState<NewsItem[]>([]);
   const [powerMarkets, setPowerMarkets] = useState<PowerMarketHub[]>([]);
   const [hardwareProfiles, setHardwareProfiles] = useState<HardwareProfile[]>([]);
+
+  const handleSelectTab = (tab: TabId) => {
+    if (tab === currentTab) return;
+    navigateToTab(tab);
+    setCurrentTab(tab);
+  };
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const tab = parseTabFromUrl();
+      setCurrentTab(tab);
+      if (TAB_TITLES[tab]) {
+        document.title = TAB_TITLES[tab];
+      }
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+
+    if (TAB_TITLES[currentTab]) {
+      document.title = TAB_TITLES[currentTab];
+    }
+
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchTelemetry = async () => {
@@ -118,10 +147,10 @@ export const App: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-[#070a13] text-slate-100 selection:bg-indigo-500 selection:text-white">
       <LiveTicker telemetry={telemetry} />
-      <Header currentTab={currentTab} onSelectTab={setCurrentTab} telemetry={telemetry} />
+      <Header currentTab={currentTab} onSelectTab={handleSelectTab} telemetry={telemetry} />
 
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-        {currentTab === 'summary' && <OverviewTab onSelectTab={setCurrentTab} />}
+        {currentTab === 'summary' && <OverviewTab onSelectTab={handleSelectTab} />}
         {currentTab === 'tracking' && (
           <ConstellationTrackerTab satellites={satellites} crosslinks={crosslinks} />
         )}

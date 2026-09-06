@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TabId, TelemetryData } from '../types';
 import { Globe, Menu, X, Radio, BookOpen } from 'lucide-react';
+import { getTabPath } from '../utils/routing';
 
 interface HeaderProps {
   currentTab: TabId;
@@ -23,7 +24,11 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onSelectTab, telemet
     { id: 'media', label: 'Media' },
   ];
 
-  const handleTabClick = (id: TabId) => {
+  const handleTabClick = (e: React.MouseEvent, id: TabId) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
+      return;
+    }
+    e.preventDefault();
     onSelectTab(id);
     setMobileMenuOpen(false);
   };
@@ -37,9 +42,10 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onSelectTab, telemet
         <div className="flex items-center justify-between h-16 w-full gap-4">
           
           {/* Brand Logo */}
-          <div 
+          <a 
+            href={getTabPath('summary')}
+            onClick={(e) => handleTabClick(e, 'summary')}
             className="flex items-center space-x-2.5 cursor-pointer group shrink-0"
-            onClick={() => handleTabClick('summary')}
           >
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
               <Globe className="w-4 h-4 text-white" />
@@ -50,15 +56,16 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onSelectTab, telemet
                 v2.0
               </span>
             </div>
-          </div>
+          </a>
 
           {/* Centered Navigation Tabs */}
           <div className="hidden lg:flex items-center space-x-1">
             {navItems.map((item) => (
-              <button
+              <a
                 key={item.id}
-                onClick={() => handleTabClick(item.id)}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                href={getTabPath(item.id)}
+                onClick={(e) => handleTabClick(e, item.id)}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
                   currentTab === item.id
                     ? 'text-indigo-300 bg-indigo-500/15 border border-indigo-500/30 shadow-sm'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
@@ -68,7 +75,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onSelectTab, telemet
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
                 )}
                 {item.label}
-              </button>
+              </a>
             ))}
           </div>
 
@@ -108,10 +115,11 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onSelectTab, telemet
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-slate-800/80 bg-slate-950/95 px-4 pt-2 pb-4 space-y-1">
           {navItems.map((item) => (
-            <button
+            <a
               key={item.id}
-              onClick={() => handleTabClick(item.id)}
-              className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition flex items-center justify-between ${
+              href={getTabPath(item.id)}
+              onClick={(e) => handleTabClick(e, item.id)}
+              className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition flex items-center justify-between cursor-pointer ${
                 currentTab === item.id
                   ? 'text-indigo-300 bg-indigo-500/15 border border-indigo-500/20'
                   : 'text-slate-300 hover:bg-slate-800/50'
@@ -123,7 +131,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onSelectTab, telemet
                   LIVE
                 </span>
               )}
-            </button>
+            </a>
           ))}
           <a
             href="/docs"

@@ -7,7 +7,7 @@ from typing import Any
 
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from scalar_fastapi import get_scalar_api_reference
 
@@ -167,9 +167,24 @@ def healthz() -> dict[str, str]:
 
 
 # ============================================================================
-# Static Frontend SPA Mounting
+# Static Frontend SPA Mounting & Fallback Routing
 # ============================================================================
 
 DIST = ROOT / "frontend" / "dist"
 if DIST.is_dir():
-    app.mount("/", StaticFiles(directory=DIST, html=True), name="spa")
+    assets_dir = DIST / "assets"
+    if assets_dir.is_dir():
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa(full_path: str):
+        if full_path.startswith("api/"):
+            return JSONResponse({"detail": "Not Found"}, status_code=404)
+        file_path = DIST / full_path
+        if full_path and file_path.is_file():
+            return FileResponse(file_path)
+        index_file = DIST / "index.html"
+        if index_file.is_file():
+            return FileResponse(index_file)
+        return JSONResponse({"detail": "Not Found"}, status_code=404)
+

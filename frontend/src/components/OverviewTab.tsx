@@ -1,6 +1,7 @@
 import React from 'react';
 import { TabId } from '../types';
 import { Sun, Snowflake, Rocket, Cpu, Flame, CheckCircle, XCircle, Sparkles, ArrowRight, ShieldAlert, Zap } from 'lucide-react';
+import { getTabPath } from '../utils/routing';
 
 interface OverviewTabProps {
   onSelectTab: (tab: TabId) => void;
@@ -25,18 +26,30 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ onSelectTab }) => {
             Terrestrial AI data centers are colliding with the "Thermodynamic & Grid Wall"—5 to 7 year utility interconnection backlogs and massive freshwater consumption. Computing in Low Earth Orbit (LEO) unlocks <strong>24/7 unfiltered solar flux (1,361 W/m²)</strong> and <strong>infinite radiative cooling into the 3 Kelvin cosmic vacuum</strong>.
           </p>
           <div className="flex flex-wrap gap-4 pt-2">
-            <button
-              onClick={() => onSelectTab('tracking')}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 transition flex items-center gap-2"
+            <a
+              href={getTabPath('tracking')}
+              onClick={(e) => {
+                if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                  e.preventDefault();
+                  onSelectTab('tracking');
+                }
+              }}
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 transition flex items-center gap-2 cursor-pointer"
             >
               <Cpu className="w-4 h-4" /> Live Constellation & Laser Mesh
-            </button>
-            <button
-              onClick={() => onSelectTab('arbitrage')}
-              className="px-6 py-3 rounded-xl glass-card hover:bg-slate-800/80 text-slate-200 font-semibold text-sm border border-slate-700 transition flex items-center gap-2"
+            </a>
+            <a
+              href={getTabPath('arbitrage')}
+              onClick={(e) => {
+                if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                  e.preventDefault();
+                  onSelectTab('arbitrage');
+                }
+              }}
+              className="px-6 py-3 rounded-xl glass-card hover:bg-slate-800/80 text-slate-200 font-semibold text-sm border border-slate-700 transition flex items-center gap-2 cursor-pointer"
             >
               <Zap className="w-4 h-4 text-amber-400" /> Real-Time Grid Arbitrage
-            </button>
+            </a>
           </div>
         </div>
       </div>
@@ -164,12 +177,18 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ onSelectTab }) => {
             </h3>
             <p className="text-xs text-slate-400">Major hyperscalers and startups transitioning from concept to operational hardware</p>
           </div>
-          <button
-            onClick={() => onSelectTab('timeline')}
-            className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 self-start sm:self-auto"
+          <a
+            href={getTabPath('timeline')}
+            onClick={(e) => {
+              if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                e.preventDefault();
+                onSelectTab('timeline');
+              }
+            }}
+            className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 self-start sm:self-auto cursor-pointer"
           >
             View Full Roadmap <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          </a>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition">
