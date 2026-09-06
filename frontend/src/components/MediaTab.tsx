@@ -31,6 +31,13 @@ export const MediaTab: React.FC = () => {
       tagColor: 'text-purple-400',
       description: 'A behind-the-scenes investigative look into the hardware cleanrooms, shaker table testing, and thermal vacuum chamber validation at Starcloud.',
     },
+    {
+      id: 'A9JDkiYEhfY',
+      title: 'The Case For Data Centers In Space',
+      tag: 'Y COMBINATOR',
+      tagColor: 'text-amber-400',
+      description: 'Starcloud CEO Philip Johnston discusses orbital compute economics, 20 GW constellation architecture, thermal dissipation in vacuum, and Starcloud-1 heritage.',
+    },
   ];
 
   const papers = [
@@ -96,7 +103,7 @@ export const MediaTab: React.FC = () => {
         ))}
 
         {/* Papers Card */}
-        <div className="glass-card p-6 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-4 md:col-span-2 lg:col-span-2">
+        <div className="glass-card p-6 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center space-x-2 text-xs text-emerald-400 font-bold mb-2">
               <FileText className="w-3.5 h-3.5" />
@@ -105,12 +112,12 @@ export const MediaTab: React.FC = () => {
             <h3 className="font-bold text-white text-xl mb-2">Key Research Papers & Publications</h3>
             <div className="space-y-3 mt-4 text-xs">
               {papers.map((p, idx) => (
-                <div key={idx} className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800 flex justify-between items-center">
-                  <div>
-                    <span className="font-bold text-white block">{p.title}</span>
-                    <span className="text-slate-400">{p.authors}</span>
+                <div key={idx} className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800 flex justify-between items-start gap-2">
+                  <div className="min-w-0">
+                    <span className="font-bold text-white block leading-snug">{p.title}</span>
+                    <span className="text-slate-400 text-[11px] block mt-0.5">{p.authors}</span>
                   </div>
-                  <span className={`px-2 py-1 rounded bg-slate-800 ${p.badgeColor} font-mono text-[10px]`}>
+                  <span className={`px-2 py-1 rounded bg-slate-800 ${p.badgeColor} font-mono text-[10px] shrink-0 whitespace-nowrap`}>
                     {p.badge}
                   </span>
                 </div>
